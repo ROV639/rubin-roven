@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const images = [
+  // 占位图，待替换
+];
+---
+
+<BaseLayout title="Gallery — Rubin Roven">
+  <section class="max-w-6xl mx-auto px-6 py-12">
+    <div class="mb-12">
+      <h1 class="text-3xl font-extralight tracking-wider mb-2">Gallery</h1>
+      <p class="text-neutral-500 text-sm">素材存档 · 持续更新</p>
+    </div>
+
+    {images.length === 0 ? (
+      <div class="text-center py-32 text-neutral-600">
+        <p class="text-lg mb-2">暂无内容</p>
+        <p class="text-sm">图片待上传</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {images.map((img) => (
+          <a href={img.url} class="group block aspect-square overflow-hidden rounded-lg bg-neutral-900">
+            <img
+              src={img.thumb}
+              alt={img.title}
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+            />
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
