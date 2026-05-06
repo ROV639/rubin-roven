@@ -16,24 +16,23 @@ const { title = 'Rubin Roven' } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
-        --green-deep: #0D1F15;
-        --green-forest: #1A3327;
-        --green-moss: #2D4A3A;
-        --gold-warm: #C5A572;
-        --gold-light: #D4B896;
-        --cream: #F5F0E8;
-        --cream-dark: #EDE6D9;
-        --leather: #8B6914;
-        --ink: #F5F0E8;
-        --surface: rgba(26, 51, 39, 0.6);
+        --bg-deep: #071209;
+        --bg-surface: #0a1f12;
+        --accent: #00D49A;
+        --accent-dim: rgba(0, 212, 154, 0.5);
+        --accent-muted: rgba(0, 212, 154, 0.12);
+        --accent-border: rgba(0, 212, 154, 0.2);
+        --text-primary: #E8F5F0;
+        --text-dim: rgba(200, 230, 215, 0.5);
+        --glow: rgba(0, 200, 120, 0.15);
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html { scroll-behavior: smooth; }
 
       body {
-        font-family: 'Inter', 'Noto Serif SC', sans-serif;
-        background: var(--green-deep);
-        color: var(--ink);
+        font-family: 'Inter', 'Noto Serif SC', system-ui, sans-serif;
+        background: var(--bg-deep);
+        color: var(--text-primary);
         min-height: 100vh;
         overflow-x: hidden;
       }
@@ -44,23 +43,24 @@ const { title = 'Rubin Roven' } = Astro.props;
         position: fixed;
         inset: 0;
         background:
-          radial-gradient(ellipse at 20% 20%, rgba(45, 90, 71, 0.4) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 80%, rgba(197, 165, 114, 0.15) 0%, transparent 50%),
-          radial-gradient(ellipse at 50% 50%, rgba(26, 51, 39, 0.8) 0%, transparent 70%);
+          radial-gradient(ellipse at 20% 20%, rgba(0, 212, 154, 0.08) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 80%, rgba(0, 212, 154, 0.05) 0%, transparent 50%),
+          radial-gradient(ellipse at 50% 50%, rgba(10, 31, 18, 0.9) 0%, transparent 70%);
         pointer-events: none;
         z-index: 0;
-        animation: orbFloat 12s ease-in-out infinite;
+        animation: orbFloat 15s ease-in-out infinite;
       }
 
-      /* Subtle noise texture */
+      /* Noise texture */
       body::after {
         content: '';
         position: fixed;
         inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.75%27 numOctaves=%274%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27 opacity=%270.05%27/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%274%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27/%3E%3C/svg%3E");
         pointer-events: none;
         z-index: 0;
-        opacity: 0.5;
+        opacity: 0.06;
+        mix-blend-mode: overlay;
       }
 
       @keyframes orbFloat {
@@ -77,42 +77,51 @@ const { title = 'Rubin Roven' } = Astro.props;
       h1, h2, h3, h4 {
         font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
         font-weight: 400;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.02em;
       }
 
       /* Scrollbar */
       ::-webkit-scrollbar { width: 5px; }
-      ::-webkit-scrollbar-track { background: var(--green-deep); }
-      ::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--gold-warm); }
+      ::-webkit-scrollbar-track { background: var(--bg-deep); }
+      ::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
       /* Selection */
-      ::selection { background: rgba(197,165,114,0.3); }
+      ::selection { background: rgba(0, 212, 154, 0.3); }
 
       /* Glass effect */
       .glass {
-        background: var(--surface);
+        background: rgba(7, 18, 9, 0.8);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(212, 184, 150, 0.15);
+        border-bottom: 0.5px solid var(--accent-border);
       }
+
+      .card {
+        background: var(--bg-surface);
+        border: 0.5px solid var(--accent-border);
+        border-radius: 6px;
+      }
+
+      .accent-text { color: var(--accent); }
+      .dim-text { color: var(--text-dim); }
     </style>
   </head>
   <body>
-    <header class="glass border-b border-[var(--gold-light)]/20 sticky top-0 z-50">
+    <header class="glass sticky top-0 z-50">
       <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="/" class="group flex items-baseline gap-2">
-          <span class="text-2xl font-light tracking-[0.15em] text-[var(--cream)] uppercase" style="font-family: 'Cormorant Garamond', serif;">Rubin</span>
-          <span class="text-2xl font-light tracking-[0.15em] text-[var(--gold-warm)] italic" style="font-family: 'Cormorant Garamond', serif;">Roven</span>
+          <span class="text-2xl font-light tracking-[0.12em] text-[var(--text-primary)] uppercase" style="font-family: 'Cormorant Garamond', serif;">Rubin</span>
+          <span class="text-2xl font-light tracking-[0.12em] accent-text italic" style="font-family: 'Cormorant Garamond', serif;">Roven</span>
         </a>
         <nav class="flex gap-10 text-xs tracking-[0.25em] uppercase font-light">
-          <a href="/" class="text-[var(--gold-light)]/70 hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
+          <a href="/" class="dim-text hover:accent-text transition-colors duration-300 relative group py-1">
             Gallery
-            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
+            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--accent)] group-hover:w-full transition-all duration-500"></span>
           </a>
-          <a href="/about" class="text-[var(--gold-light)]/70 hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
+          <a href="/about" class="dim-text hover:accent-text transition-colors duration-300 relative group py-1">
             About
-            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
+            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--accent)] group-hover:w-full transition-all duration-500"></span>
           </a>
         </nav>
       </div>
@@ -120,15 +129,15 @@ const { title = 'Rubin Roven' } = Astro.props;
     <main>
       <slot />
     </main>
-    <footer class="border-t border-[var(--gold-light)]/20 mt-20 relative z-10">
+    <footer class="border-t border-[var(--accent-border)] mt-20 relative z-10">
       <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col items-center gap-2 text-center">
         <div class="flex items-center gap-3 mb-2">
-          <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
-          <span class="text-[var(--gold-warm)] text-xs tracking-[0.3em] uppercase">Est. 2026</span>
-          <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
+          <span class="w-8 h-px bg-[var(--accent)] opacity-60"></span>
+          <span class="accent-text text-xs tracking-[0.3em] uppercase">Est. 2026</span>
+          <span class="w-8 h-px bg-[var(--accent)] opacity-60"></span>
         </div>
-        <p class="text-[var(--gold-light)]/50 text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
-        <p class="text-[var(--gold-warm)]/30 text-xs tracking-widest uppercase">Crafted with intention</p>
+        <p class="dim-text text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
+        <p class="text-[var(--accent)]/30 text-xs tracking-widest uppercase">Crafted with intention</p>
       </div>
     </footer>
   </body>
