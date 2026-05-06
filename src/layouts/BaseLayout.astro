@@ -13,67 +13,91 @@ const { title = 'Rubin Roven' } = Astro.props;
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Cormorant:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
-        --accent: #a78bfa;
-        --accent2: #818cf8;
-        --accent3: #6366f1;
+        --green-deep: #1B3D2F;
+        --green-forest: #2D5A47;
+        --green-moss: #3D6B55;
+        --gold-warm: #C5A572;
+        --gold-light: #D4B896;
+        --cream: #F5F0E8;
+        --cream-dark: #EDE6D9;
+        --leather: #8B6914;
+        --ink: #1A1A18;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html { scroll-behavior: smooth; }
+
       body {
-        font-family: 'Space Grotesk', 'Noto Serif SC', sans-serif;
-        background: #09090b;
-        color: #e4e4e7;
+        font-family: 'Cormorant', 'Noto Serif SC', Georgia, serif;
+        background: var(--cream);
+        color: var(--ink);
         min-height: 100vh;
         overflow-x: hidden;
       }
-      /* Animated gradient background */
+
+      /* Parchment texture background */
       body::before {
         content: '';
         position: fixed;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
+        inset: 0;
         background:
-          radial-gradient(ellipse at 20% 20%, rgba(167,139,250,0.08) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 80%, rgba(99,102,241,0.06) 0%, transparent 50%),
-          radial-gradient(ellipse at 50% 50%, rgba(129,140,248,0.04) 0%, transparent 70%);
-        animation: bgFloat 20s ease-in-out infinite;
+          radial-gradient(ellipse at 0% 0%, rgba(27,61,47,0.06) 0%, transparent 60%),
+          radial-gradient(ellipse at 100% 100%, rgba(197,165,114,0.08) 0%, transparent 60%),
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
         pointer-events: none;
         z-index: 0;
       }
-      @keyframes bgFloat {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(2%, -1%) rotate(1deg); }
-        66% { transform: translate(-1%, 2%) rotate(-1deg); }
+
+      /* Decorative corner */
+      body::after {
+        content: '';
+        position: fixed;
+        top: 0; right: 0;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(ellipse at top right, rgba(197,165,114,0.15) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
       }
+
       header { position: relative; z-index: 10; }
       main { position: relative; z-index: 1; }
       footer { position: relative; z-index: 10; }
+
+      /* Typography */
+      h1, h2, h3, h4 {
+        font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+        font-weight: 400;
+        letter-spacing: 0.02em;
+      }
+
       /* Scrollbar */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: var(--cream-dark); }
+      ::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--gold-warm); }
+
+      /* Selection */
+      ::selection { background: rgba(197,165,114,0.3); }
     </style>
   </head>
   <body>
-    <header class="border-b border-neutral-800/50 backdrop-blur-sm bg-neutral-950/80 sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="text-lg font-light tracking-[0.2em] uppercase text-neutral-200 hover:text-white transition-colors duration-300">
-          Rubin Roven
+    <header class="border-b border-[var(--gold-light)]/30 bg-[var(--cream)]/95 backdrop-blur-md sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="/" class="group flex items-baseline gap-2">
+          <span class="text-2xl font-light tracking-[0.15em] text-[var(--green-deep)] uppercase">Rubin</span>
+          <span class="text-lg font-light tracking-[0.2em] text-[var(--gold-warm)] italic">Roven</span>
         </a>
-        <nav class="flex gap-8 text-sm text-neutral-500">
-          <a href="/" class="hover:text-white transition-colors duration-300 relative group">
+        <nav class="flex gap-8 text-sm tracking-widest uppercase">
+          <a href="/" class="text-[var(--green-forest)] hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
             Gallery
-            <span class="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent group-hover:w-full transition-all duration-500"></span>
+            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
           </a>
-          <a href="/about" class="hover:text-white transition-colors duration-300 relative group">
+          <a href="/about" class="text-[var(--green-forest)] hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
             About
-            <span class="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent group-hover:w-full transition-all duration-500"></span>
+            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
           </a>
         </nav>
       </div>
@@ -81,10 +105,15 @@ const { title = 'Rubin Roven' } = Astro.props;
     <main>
       <slot />
     </main>
-    <footer class="border-t border-neutral-800/50 backdrop-blur-sm bg-neutral-950/50 mt-20">
-      <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col items-center gap-2 text-center">
-        <p class="text-neutral-600 text-sm">&copy; 2026 Rubin Roven. All rights reserved.</p>
-        <p class="text-neutral-700 text-xs">Built with Astro · Deployed on Cloudflare Pages</p>
+    <footer class="border-t border-[var(--gold-light)]/40 bg-[var(--cream-dark)]/50 mt-20">
+      <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col items-center gap-2 text-center">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
+          <span class="text-[var(--gold-warm)] text-xs tracking-[0.3em] uppercase">Est. 2026</span>
+          <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
+        </div>
+        <p class="text-[var(--green-moss)] text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
+        <p class="text-[var(--leather)]/50 text-xs tracking-widest uppercase">Crafted with intention</p>
       </div>
     </footer>
   </body>
