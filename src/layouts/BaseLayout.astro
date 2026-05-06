@@ -13,53 +13,60 @@ const { title = 'Rubin Roven' } = Astro.props;
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Cormorant:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
     <style is:global>
       :root {
-        --green-deep: #1B3D2F;
-        --green-forest: #2D5A47;
-        --green-moss: #3D6B55;
+        --green-deep: #0D1F15;
+        --green-forest: #1A3327;
+        --green-moss: #2D4A3A;
         --gold-warm: #C5A572;
         --gold-light: #D4B896;
         --cream: #F5F0E8;
         --cream-dark: #EDE6D9;
         --leather: #8B6914;
-        --ink: #1A1A18;
+        --ink: #F5F0E8;
+        --surface: rgba(26, 51, 39, 0.6);
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html { scroll-behavior: smooth; }
 
       body {
-        font-family: 'Cormorant', 'Noto Serif SC', Georgia, serif;
-        background: var(--cream);
+        font-family: 'Inter', 'Noto Serif SC', sans-serif;
+        background: var(--green-deep);
         color: var(--ink);
         min-height: 100vh;
         overflow-x: hidden;
       }
 
-      /* Parchment texture background */
+      /* Dynamic floating orbs background */
       body::before {
         content: '';
         position: fixed;
         inset: 0;
         background:
-          radial-gradient(ellipse at 0% 0%, rgba(27,61,47,0.06) 0%, transparent 60%),
-          radial-gradient(ellipse at 100% 100%, rgba(197,165,114,0.08) 0%, transparent 60%),
-          url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+          radial-gradient(ellipse at 20% 20%, rgba(45, 90, 71, 0.4) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 80%, rgba(197, 165, 114, 0.15) 0%, transparent 50%),
+          radial-gradient(ellipse at 50% 50%, rgba(26, 51, 39, 0.8) 0%, transparent 70%);
         pointer-events: none;
         z-index: 0;
+        animation: orbFloat 12s ease-in-out infinite;
       }
 
-      /* Decorative corner */
+      /* Subtle noise texture */
       body::after {
         content: '';
         position: fixed;
-        top: 0; right: 0;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(ellipse at top right, rgba(197,165,114,0.15) 0%, transparent 70%);
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.75%27 numOctaves=%274%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27 opacity=%270.05%27/%3E%3C/svg%3E");
         pointer-events: none;
         z-index: 0;
+        opacity: 0.5;
+      }
+
+      @keyframes orbFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -20px) scale(1.05); }
+        66% { transform: translate(-20px, 20px) scale(0.95); }
       }
 
       header { position: relative; z-index: 10; }
@@ -70,32 +77,40 @@ const { title = 'Rubin Roven' } = Astro.props;
       h1, h2, h3, h4 {
         font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
         font-weight: 400;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.03em;
       }
 
       /* Scrollbar */
       ::-webkit-scrollbar { width: 5px; }
-      ::-webkit-scrollbar-track { background: var(--cream-dark); }
+      ::-webkit-scrollbar-track { background: var(--green-deep); }
       ::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: var(--gold-warm); }
 
       /* Selection */
       ::selection { background: rgba(197,165,114,0.3); }
+
+      /* Glass effect */
+      .glass {
+        background: var(--surface);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(212, 184, 150, 0.15);
+      }
     </style>
   </head>
   <body>
-    <header class="border-b border-[var(--gold-light)]/30 bg-[var(--cream)]/95 backdrop-blur-md sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+    <header class="glass border-b border-[var(--gold-light)]/20 sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <a href="/" class="group flex items-baseline gap-2">
-          <span class="text-2xl font-light tracking-[0.15em] text-[var(--green-deep)] uppercase">Rubin</span>
-          <span class="text-lg font-light tracking-[0.2em] text-[var(--gold-warm)] italic">Roven</span>
+          <span class="text-2xl font-light tracking-[0.15em] text-[var(--cream)] uppercase" style="font-family: 'Cormorant Garamond', serif;">Rubin</span>
+          <span class="text-2xl font-light tracking-[0.15em] text-[var(--gold-warm)] italic" style="font-family: 'Cormorant Garamond', serif;">Roven</span>
         </a>
-        <nav class="flex gap-8 text-sm tracking-widest uppercase">
-          <a href="/" class="text-[var(--green-forest)] hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
+        <nav class="flex gap-10 text-xs tracking-[0.25em] uppercase font-light">
+          <a href="/" class="text-[var(--gold-light)]/70 hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
             Gallery
             <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
           </a>
-          <a href="/about" class="text-[var(--green-forest)] hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
+          <a href="/about" class="text-[var(--gold-light)]/70 hover:text-[var(--gold-warm)] transition-colors duration-300 relative group py-1">
             About
             <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--gold-warm)] group-hover:w-full transition-all duration-500"></span>
           </a>
@@ -105,15 +120,15 @@ const { title = 'Rubin Roven' } = Astro.props;
     <main>
       <slot />
     </main>
-    <footer class="border-t border-[var(--gold-light)]/40 bg-[var(--cream-dark)]/50 mt-20">
+    <footer class="border-t border-[var(--gold-light)]/20 mt-20 relative z-10">
       <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col items-center gap-2 text-center">
         <div class="flex items-center gap-3 mb-2">
           <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
           <span class="text-[var(--gold-warm)] text-xs tracking-[0.3em] uppercase">Est. 2026</span>
           <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
         </div>
-        <p class="text-[var(--green-moss)] text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
-        <p class="text-[var(--leather)]/50 text-xs tracking-widest uppercase">Crafted with intention</p>
+        <p class="text-[var(--gold-light)]/50 text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
+        <p class="text-[var(--gold-warm)]/30 text-xs tracking-widest uppercase">Crafted with intention</p>
       </div>
     </footer>
   </body>

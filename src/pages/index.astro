@@ -16,9 +16,6 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
 <BaseLayout title="Gallery — Rubin Roven">
   <!-- Hero Section -->
   <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-    <!-- Subtle background texture -->
-    <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
-
     <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
       <!-- Decorative top mark -->
       <div class="flex items-center justify-center gap-4 mb-12">
@@ -27,14 +24,14 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
         <span class="w-16 h-px bg-[var(--gold-warm)] opacity-60"></span>
       </div>
 
-      <h1 class="text-6xl md:text-8xl font-extralight tracking-[0.1em] leading-none mb-8 text-[var(--green-deep)]">
+      <h1 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-6 text-[var(--cream)]">
         RUBIN
       </h1>
-      <h2 class="text-6xl md:text-8xl font-extralight tracking-[0.1em] leading-none text-[var(--green-deep)]">
+      <h2 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-10 text-[var(--gold-warm)]">
         ROVEN
       </h2>
 
-      <p class="text-[var(--green-forest)]/70 text-lg font-light leading-loose max-w-lg mx-auto mb-14">
+      <p class="text-[var(--gold-light)]/60 text-lg font-light leading-loose max-w-lg mx-auto mb-14">
         记录所见，探索所知。<br />
         让每一次定格，都成为时间的标本。
       </p>
@@ -47,7 +44,7 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
       </div>
 
       <div class="flex items-center justify-center gap-5">
-        <a href="#gallery" class="group inline-flex items-center gap-3 px-8 py-3 border border-[var(--green-deep)] text-[var(--green-deep)] text-sm tracking-[0.2em] uppercase hover:bg-[var(--green-deep)] hover:text-[var(--cream)] transition-all duration-500">
+        <a href="#gallery" class="group inline-flex items-center gap-3 px-8 py-3 border border-[var(--gold-warm)]/50 text-[var(--gold-light)] text-sm tracking-[0.2em] uppercase hover:bg-[var(--gold-warm)] hover:text-[var(--green-deep)] transition-all duration-500">
           <span>开始探索</span>
           <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -57,9 +54,9 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
     </div>
 
     <!-- Scroll indicator -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-[var(--gold-light)] animate-bounce">
-      <span class="text-[10px] tracking-[0.4em] uppercase opacity-50">Scroll</span>
-      <svg class="w-4 h-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-[var(--gold-light)]/40 animate-bounce">
+      <span class="text-[10px] tracking-[0.4em] uppercase">Scroll</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
       </svg>
     </div>
@@ -74,7 +71,7 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
           <span class="w-8 h-px bg-[var(--gold-warm)]"></span>
           <span class="text-[var(--gold-warm)] text-xs tracking-[0.3em] uppercase">Gallery</span>
         </div>
-        <h2 class="text-4xl font-light tracking-tight text-[var(--green-deep)]">精选作品</h2>
+        <h2 class="text-4xl font-light tracking-tight text-[var(--cream)]">精选作品</h2>
       </div>
 
       <!-- Category filters -->
@@ -84,8 +81,8 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
             data-category={cat === '全部' ? 'all' : cat}
             class={`px-5 py-2 text-xs tracking-[0.15em] uppercase border transition-all duration-400 ${
               i === 0
-                ? 'bg-[var(--green-deep)] text-[var(--cream)] border-[var(--green-deep)]'
-                : 'border-[var(--gold-light)]/50 text-[var(--green-moss)] hover:border-[var(--green-deep)] hover:text-[var(--green-deep)]'
+                ? 'bg-[var(--gold-warm)] text-[var(--green-deep)] border-[var(--gold-warm)]'
+                : 'border-[var(--gold-light)]/30 text-[var(--gold-light)]/70 hover:border-[var(--gold-warm)] hover:text-[var(--gold-warm)]'
             }`}
           >
             {cat}
@@ -99,7 +96,7 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
       {gallery.map((img, i) => (
         <a
           href={img.url}
-          class={`group block relative overflow-hidden bg-[var(--cream-dark)] cursor-pointer ${
+          class={`group block relative overflow-hidden bg-[var(--green-forest)]/30 cursor-pointer glass ${
             i % 3 === 1 ? 'md:mt-10' : ''
           } ${i % 3 === 2 ? 'md:mt-5' : ''}`}
           data-category={img.category}
@@ -115,22 +112,22 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
           </div>
 
           <!-- Elegant overlay -->
-          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6" style="background: linear-gradient(to top, rgba(27,61,47,0.85) 0%, rgba(27,61,47,0.2) 50%, transparent 100%);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6" style="background: linear-gradient(to top, rgba(13,31,21,0.9) 0%, rgba(13,31,21,0.4) 50%, transparent 100%);">
             <span class="text-[var(--gold-light)] text-[10px] tracking-[0.3em] uppercase mb-1 opacity-80">{img.category}</span>
             <h3 class="text-[var(--cream)] text-xl font-light tracking-wide">{img.title}</h3>
           </div>
 
-          <!-- Hermès corner accent -->
-          <div class="absolute top-4 left-4 w-6 h-6 border-l border-t border-[var(--gold-warm)]/0 group-hover:border-[var(--gold-warm)]/60 transition-all duration-500"></div>
-          <div class="absolute bottom-4 right-4 w-6 h-6 border-r border-b border-[var(--gold-warm)]/0 group-hover:border-[var(--gold-warm)]/60 transition-all duration-500"></div>
+          <!-- Corner accent -->
+          <div class="absolute top-4 left-4 w-6 h-6 border-l border-t border-[var(--gold-warm)]/0 group-hover:border-[var(--gold-warm)]/50 transition-all duration-500"></div>
+          <div class="absolute bottom-4 right-4 w-6 h-6 border-r border-b border-[var(--gold-warm)]/0 group-hover:border-[var(--gold-warm)]/50 transition-all duration-500"></div>
         </a>
       ))}
     </div>
 
     <!-- Empty state -->
     <div id="empty-state" class="hidden text-center py-32">
-      <p class="text-[var(--green-moss)]/60 text-lg font-light tracking-wide mb-2">暂无匹配内容</p>
-      <p class="text-[var(--gold-light)]/50 text-sm">更多内容持续上传中</p>
+      <p class="text-[var(--gold-light)]/40 text-lg font-light tracking-wide mb-2">暂无匹配内容</p>
+      <p class="text-[var(--gold-light)]/30 text-sm">更多内容持续上传中</p>
     </div>
   </section>
 </BaseLayout>
@@ -152,11 +149,11 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
       const cat = btn.getAttribute('data-category');
 
       buttons.forEach(b => {
-        b.classList.remove('bg-[var(--green-deep)]', 'text-[var(--cream)]', 'border-[var(--green-deep)]');
-        b.classList.add('border-[var(--gold-light)]/50', 'text-[var(--green-moss)]');
+        b.classList.remove('bg-[var(--gold-warm)]', 'text-[var(--green-deep)]', 'border-[var(--gold-warm)]');
+        b.classList.add('border-[var(--gold-light)]/30', 'text-[var(--gold-light)]/70');
       });
-      btn.classList.add('bg-[var(--green-deep)]', 'text-[var(--cream)]', 'border-[var(--green-deep)]');
-      btn.classList.remove('border-[var(--gold-light)]/50', 'text-[var(--green-moss)]');
+      btn.classList.add('bg-[var(--gold-warm)]', 'text-[var(--green-deep)]', 'border-[var(--gold-warm)]');
+      btn.classList.remove('border-[var(--gold-light)]/30', 'text-[var(--gold-light)]/70');
 
       let visible = 0;
       items.forEach(item => {
