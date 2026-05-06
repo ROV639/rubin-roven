@@ -3,11 +3,112 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="About — Rubin Roven">
-  <section class="max-w-2xl mx-auto px-6 py-12">
-    <h1 class="text-3xl font-extralight tracking-wider mb-8">About</h1>
-    <div class="space-y-4 text-neutral-400 leading-relaxed">
-      <p>素材存档，记录成长。</p>
-      <p class="text-sm text-neutral-600">更多内容持续更新中...</p>
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <!-- Header -->
+    <div class="text-center mb-20">
+      <p class="text-violet-400 text-xs tracking-[0.3em] uppercase mb-4">About Us</p>
+      <h1 class="text-4xl md:text-5xl font-extralight tracking-tight text-neutral-100 mb-4">关于 Rubin Roven</h1>
+      <div class="w-12 h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent mx-auto"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="grid md:grid-cols-2 gap-16 items-start">
+      <!-- Left: Story -->
+      <div class="space-y-6">
+        <div class="relative">
+          <div class="absolute -left-4 top-0 w-px h-full bg-gradient-to-b from-transparent via-violet-600/50 to-transparent"></div>
+          <div class="pl-6">
+            <h3 class="text-xl font-light text-neutral-200 mb-3 tracking-wide">我们的故事</h3>
+            <p class="text-neutral-500 leading-relaxed text-sm">
+              Rubin Roven 是一个素材存档项目，致力于收集和整理视觉创作中的灵感和片段。我们相信，每一张图片都是时间的切片，每一个构图都是情感的凝结。
+            </p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -left-4 top-0 w-px h-full bg-gradient-to-b from-transparent via-violet-600/50 to-transparent"></div>
+          <div class="pl-6">
+            <h3 class="text-xl font-light text-neutral-200 mb-3 tracking-wide">创作理念</h3>
+            <p class="text-neutral-500 leading-relaxed text-sm">
+              在碎片化的信息时代，我们更注重沉淀与积累。每一件作品，都经过精心筛选；每一个分类，都经过反复推敲。让素材回归素材，让创作回归创作。
+            </p>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -left-4 top-0 w-px h-full bg-gradient-to-b from-transparent via-violet-600/50 to-transparent"></div>
+          <div class="pl-6">
+            <h3 class="text-xl font-light text-neutral-200 mb-3 tracking-wide">未来规划</h3>
+            <p class="text-neutral-500 leading-relaxed text-sm">
+              这是一个持续生长的项目。随着素材库的丰富，我们将逐步开放投稿功能，邀请更多创作者加入，共同构建这个开放的视觉存档。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Stats / Info -->
+      <div class="space-y-6">
+        <!-- Stats cards -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm text-center">
+            <p class="text-3xl font-extralight text-violet-400 mb-1">∞</p>
+            <p class="text-neutral-600 text-xs tracking-widest uppercase">持续更新</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm text-center">
+            <p class="text-3xl font-extralight text-indigo-400 mb-1">精选</p>
+            <p class="text-neutral-600 text-xs tracking-widest uppercase">品质优先</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm text-center">
+            <p class="text-3xl font-extralight text-purple-400 mb-1">开放</p>
+            <p class="text-neutral-600 text-xs tracking-widest uppercase">共建共享</p>
+          </div>
+          <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm text-center">
+            <p class="text-3xl font-extralight text-blue-400 mb-1">免费</p>
+            <p class="text-neutral-600 text-xs tracking-widest uppercase">无门槛</p>
+          </div>
+        </div>
+
+        <!-- Contact card -->
+        <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm">
+          <h4 class="text-neutral-300 text-sm font-medium mb-4 tracking-wide">联系方式</h4>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-3 text-neutral-500">
+              <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
+              <span>素材投稿、合作邀请</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-500">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+              <span>持续关注更新</span>
+            </div>
+            <div class="flex items-center gap-3 text-neutral-500">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+              <span>更多内容开放中</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tech stack -->
+        <div class="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800/50 backdrop-blur-sm">
+          <h4 class="text-neutral-300 text-sm font-medium mb-4 tracking-wide">技术栈</h4>
+          <div class="flex flex-wrap gap-2">
+            {['Astro 5', 'Tailwind CSS', 'Cloudflare Pages', 'GitHub'].map(tech => (
+              <span class="px-3 py-1 rounded-full bg-neutral-800 text-neutral-500 text-xs border border-neutral-700/50">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back link -->
+    <div class="text-center mt-16">
+      <a href="/" class="inline-flex items-center gap-2 text-neutral-600 hover:text-white transition-colors duration-300 text-sm group">
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16l-4-4m0 0l4-4m-4 4h18"/>
+        </svg>
+        返回 Gallery
+      </a>
     </div>
   </section>
 </BaseLayout>

@@ -1,35 +1,167 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const images = [
-  // 占位图，待替换
+const gallery = [
+  // 示例占位图（实际替换时替换URL即可）
+  { id: '01', title: '黎明', category: '自然', thumb: 'https://picsum.photos/seed/dawn/400/500', url: '#' },
+  { id: '02', title: '暮色', category: '城市', thumb: 'https://picsum.photos/seed/dusk/400/400', url: '#' },
+  { id: '03', title: '静谧', category: '建筑', thumb: 'https://picsum.photos/seed/quiet/400/600', url: '#' },
+  { id: '04', title: '流动', category: '抽象', thumb: 'https://picsum.photos/seed/flow/400/400', url: '#' },
+  { id: '05', title: '光影', category: '人像', thumb: 'https://picsum.photos/seed/light/400/500', url: '#' },
+  { id: '06', title: '夜色', category: '城市', thumb: 'https://picsum.photos/seed/night/400/400', url: '#' },
 ];
+
+const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
 ---
 
 <BaseLayout title="Gallery — Rubin Roven">
-  <section class="max-w-6xl mx-auto px-6 py-12">
-    <div class="mb-12">
-      <h1 class="text-3xl font-extralight tracking-wider mb-2">Gallery</h1>
-      <p class="text-neutral-500 text-sm">素材存档 · 持续更新</p>
+  <!-- Hero Section -->
+  <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+    <!-- Floating orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-indigo-600/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+
+    <div class="relative z-10 text-center px-6 max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-neutral-800 bg-neutral-900/50 backdrop-blur-sm mb-8 text-xs text-neutral-500 tracking-widest uppercase">
+        <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
+        素材存档 · 持续更新
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-extralight tracking-tight mb-6 leading-tight">
+        <span class="block text-neutral-100">Rubin</span>
+        <span class="block bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">Roven</span>
+      </h1>
+
+      <p class="text-neutral-500 text-lg font-light leading-relaxed mb-10 max-w-xl mx-auto">
+        记录所见，探索所知。<br />
+        让每一次定格，都成为时间的标本。
+      </p>
+
+      <div class="flex items-center justify-center gap-4">
+        <a href="#gallery" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-medium hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300 hover:-translate-y-0.5">
+          开始探索
+        </a>
+        <a href="/about" class="px-6 py-2.5 rounded-full border border-neutral-700 text-neutral-400 text-sm hover:border-neutral-500 hover:text-white transition-all duration-300">
+          关于我们
+        </a>
+      </div>
     </div>
 
-    {images.length === 0 ? (
-      <div class="text-center py-32 text-neutral-600">
-        <p class="text-lg mb-2">暂无内容</p>
-        <p class="text-sm">图片待上传</p>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-600 animate-bounce">
+      <span class="text-xs tracking-widest uppercase">Scroll</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="max-w-6xl mx-auto px-6 py-20">
+    <!-- Section header -->
+    <div class="flex items-end justify-between mb-12">
+      <div>
+        <p class="text-violet-400 text-xs tracking-[0.3em] uppercase mb-2">Collection</p>
+        <h2 class="text-3xl font-extralight tracking-tight text-neutral-100">精选作品</h2>
       </div>
-    ) : (
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {images.map((img) => (
-          <a href={img.url} class="group block aspect-square overflow-hidden rounded-lg bg-neutral-900">
+      <!-- Category filters -->
+      <div class="hidden md:flex items-center gap-1 text-sm text-neutral-500">
+        {categories.map((cat, i) => (
+          <button
+            data-category={cat === '全部' ? 'all' : cat}
+            class={`px-4 py-1.5 rounded-full border transition-all duration-300 hover:text-white ${i === 0 ? 'bg-neutral-800 border-neutral-700 text-white' : 'border-transparent hover:border-neutral-700'}`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Masonry grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6" id="gallery-grid">
+      {gallery.map((img, i) => (
+        <a
+          href={img.url}
+          class={`group relative overflow-hidden rounded-xl bg-neutral-900 cursor-pointer ${i % 3 === 1 ? 'md:mt-8' : ''}`}
+          data-category={img.category}
+          style={`animation: fadeInUp 0.6s ease-out ${i * 0.1}s both;`}
+        >
+          <div class="aspect-square w-full overflow-hidden">
             <img
               src={img.thumb}
               alt={img.title}
-              class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
             />
-          </a>
-        ))}
+          </div>
+          <!-- Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+            <span class="text-violet-400 text-xs tracking-widest uppercase mb-1">{img.category}</span>
+            <h3 class="text-white text-lg font-light">{img.title}</h3>
+          </div>
+          <!-- Corner accent -->
+          <div class="absolute top-4 right-4 w-8 h-8 border-t border-r border-white/20 rounded-tr-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Empty state (shown when no images match filter) -->
+    <div id="empty-state" class="hidden text-center py-32">
+      <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-neutral-900 flex items-center justify-center">
+        <svg class="w-8 h-8 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
       </div>
-    )}
+      <p class="text-neutral-500 text-lg mb-2">暂无匹配内容</p>
+      <p class="text-neutral-700 text-sm">更多内容持续上传中</p>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #gallery-grid:has(button[data-active="true"]) a:not([data-category]) {
+    display: none;
+  }
+</style>
+
+<script>
+  // Category filter
+  const buttons = document.querySelectorAll('button[data-category]');
+  const items = document.querySelectorAll('#gallery-grid a');
+  const emptyState = document.getElementById('empty-state');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.getAttribute('data-category');
+
+      // Update active button
+      buttons.forEach(b => {
+        b.classList.remove('bg-neutral-800', 'border-neutral-700', 'text-white');
+        b.classList.add('border-transparent', 'text-neutral-500');
+      });
+      btn.classList.add('bg-neutral-800', 'border-neutral-700', 'text-white');
+      btn.classList.remove('border-transparent', 'text-neutral-500');
+
+      // Filter items
+      let visible = 0;
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          item.style.display = 'block';
+          visible++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', visible > 0);
+      }
+    });
+  });
+</script>
