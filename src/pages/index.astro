@@ -23,15 +23,15 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
       </div>
 
       <!-- Main titles - same size, same font -->
-      <h1 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-2 text-[var(--gold-text)]" style="font-family: 'Cormorant Garamond', serif;">
+      <h1 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-2 text-[var(--gold-text)] hero-title" style="font-family: 'Cormorant Garamond', serif;">
         RUBIN
       </h1>
-      <h2 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-10 text-[var(--gold-text)]" style="font-family: 'Cormorant Garamond', serif;">
+      <h2 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-10 text-[var(--gold-text)] hero-title" style="font-family: 'Cormorant Garamond', serif;">
         ROVEN
       </h2>
 
       <!-- Subtitle -->
-      <p class="dim-text text-lg font-light leading-loose max-w-lg mx-auto mb-14">
+      <p class="text-lg font-light leading-loose max-w-lg mx-auto mb-14" style="color: var(--text-dim);">
         记录所见，探索所知。<br />
         让每一次定格，都成为时间的标本。
       </p>
@@ -130,6 +130,40 @@ const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero title hover - normal state is gold, hover makes it white */
+  .hero-title {
+    color: var(--gold-text);
+    transition: color 0.4s ease, transform 0.4s ease;
+    display: inline-block;
+    cursor: default;
+  }
+  .hero-title:hover {
+    color: var(--text-primary);
+    transform: translateY(-2px);
+  }
+
+  /* Button hover effects */
+  button[data-category] {
+    transition: all 0.4s ease;
+  }
+  button[data-category]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 212, 154, 0.15);
+  }
+
+  /* CTA button hover */
+  a[href="#gallery"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 154, 0.25);
+  }
+  a[href="#gallery"]:hover svg {
+    animation: bounceDown 0.6s ease infinite;
+  }
+  @keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
   }
 </style>
 
