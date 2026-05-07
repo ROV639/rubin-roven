@@ -51,8 +51,8 @@ const categoryNames: Record<string, string> = {
         Rubin Roven Prompts
       </h1>
 
-      <p class="text-lg font-light leading-relaxed max-w-xl mx-auto mb-10" style="color: var(--text-dim);">
-        {prompts.length}+ 高质量 GPT-Image-2 提示词<br/>
+      <p class="text-lg font-light leading-relaxed max-w-xl mx-auto mb-10" style="color: var(--gold-text);">
+        高质量 GPT-Image-2 提示词<br/>
         涵盖电商、广告、人像、海报等7大分类
       </p>
 
@@ -144,7 +144,7 @@ const categoryNames: Record<string, string> = {
               >
                 <span>📋</span> 复制
               </button>
-              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs" style="color: rgba(200,230,215,0.5);">
+              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">
                 点击展开完整提示词 ↓
               </button>
             </div>
@@ -176,7 +176,7 @@ const categoryNames: Record<string, string> = {
               >
                 <span>✓</span> 复制原文
               </button>
-              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);">
+              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
                 收起
               </button>
             </div>
@@ -312,7 +312,7 @@ const categoryNames: Record<string, string> = {
     if (full?.classList.contains('hidden')) {
       full.classList.remove('hidden');
       preview?.classList.add('hidden');
-      toggleBtns.forEach(b => b.textContent = '收起');
+      toggleBtns.forEach(b => { b.textContent = '收起'; b.style.color = 'rgba(197,165,114,0.7)'; });
     } else {
       full?.classList.add('hidden');
       preview?.classList.remove('hidden');
