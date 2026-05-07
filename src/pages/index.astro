@@ -20,6 +20,7 @@ const categories = [
   { key: 'character', label: '角色', icon: '△' },
   { key: 'ui', label: '界面', icon: '▣' },
   { key: 'comparison', label: '对比', icon: '◐' },
+  { key: 'landscape', label: '风景', icon: '▽' },
 ];
 
 const categoryNames: Record<string, string> = {
@@ -30,6 +31,7 @@ const categoryNames: Record<string, string> = {
   portrait: '人像摄影',
   poster: '海报插画',
   ui: '界面设计',
+  landscape: '风景建筑',
 };
 ---
 
@@ -51,9 +53,10 @@ const categoryNames: Record<string, string> = {
         Rubin Roven Prompts
       </h1>
 
+      <p class="text-xs tracking-widest uppercase mb-3" style="color: rgba(197,165,114,0.5);">{prompts.length} Prompts</p>
       <p class="text-lg font-light leading-relaxed max-w-xl mx-auto mb-10" style="color: var(--gold-text);">
         高质量 GPT-Image-2 提示词<br/>
-        涵盖电商、广告、人像、海报等7大分类
+        涵盖电商、广告、人像、海报等{categories.filter(c => c.key !== 'all').length}大分类
       </p>
 
       <div class="relative max-w-md mx-auto">

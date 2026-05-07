@@ -245,7 +245,7 @@
     "author": "",
     "prompt": "A character promotional poster titled “INPUT NAME,” designed in a unified vertical key visual composition (9:16). The upper half features the most recognizable element of the character as a dominant oversized visual silhouette. The middle to lower section contains the full character as a secondary subject. Inside the large silhouette and around the character, use a double-exposure and collage-style narrative composition with scenes, symbolic imagery, supporting elements, and environmental details blended into mist, ink wash, and negative space. The left and right sides include complementary secondary elements to create narrative tension and spatial variation. A continuous flowing visual line runs from top to bottom, connecting the main character, internal collage, and the large upper silhouette. Preserve large areas of negative space with ink diffusion, soft blurring, and fragmented transitions inspired by Eastern aesthetics. The style is cohesive, refined, restrained, and poster-worthy.",
     "title": "Character key visual poster with silhouette collage",
-    "category": "character"
+    "category": "ad"
   },
   {
     "img": "https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-prompts/main/images/character_case15/output.jpg",
@@ -1797,7 +1797,7 @@
     "author": "",
     "prompt": "Create a premium streetwear fashion campaign poster inspired by modern Asian apparel advertising. Full body portrait of a stylish young male model standing confidently with legs crossed at the ankles, hands inside jacket pockets, head turned slightly upward and sideways with a calm thoughtful expression. Curly tousled medium length hair with soft volume. Slim athletic build.\n\nOutfit includes a dark olive green padded hooded jacket worn open, clean white crewneck sweatshirt underneath with a tiny chest logo, relaxed black cargo style trousers, and minimal white sneakers. Styling is clean, youthful, and contemporary.\n\nBackground is a vibrant electric blue seamless studio backdrop with subtle gradient lighting, soft glow streaks, and glossy floor reflection. Lighting is soft studio light with gentle shadows and polished commercial finish.\n\nGraphic poster layout with giant bold condensed sans serif text reading “JEANSWEST” vertically stretched across the background behind the model in light gray white. Add large text on lower right reading “JW26”. \n\nComposition should feel premium, trendy, clean, commercial, youthful, modern fashion ad campaign. Sharp focus, ultra realistic fabric texture, cinematic lighting, balanced negative space, sleek branding design, high resolution, vertical poster ratio.",
     "title": "Streetwear Fashion Campaign Asian Apparel Poster",
-    "category": "poster"
+    "category": "ad"
   },
   {
     "img": "https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-prompts/main/images/poster_case72/output.jpg",
@@ -2245,7 +2245,7 @@
     "author": "",
     "prompt": "GPT image 2 on ChatGPT 📱 Prompt: A streetwear advertisement poster. A cool teenage girl in oversized hoodie and baggy jeans leans against a giant pair of floating wireless headphones 2x her height with \"BASS\" logo on earcups, colorful sound wave visualizer glowing behind. Dark urban brick wall background with purple and pink gradient neon lighting. Bold graffiti-style typography \"BASS\" in background. Tagline bottom: \"Feel every frequency.\" Small text top-right corner reads \"Designed with GPT Image 2\" in grey. Photorealistic, street culture editorial style.",
     "title": "Streetwear Headphones Ad Poster",
-    "category": "poster"
+    "category": "ad"
   },
   {
     "img": "https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-API-and-Prompts/main/images/poster_case184/output.jpg",
@@ -2883,7 +2883,7 @@
   },
   {
     "title": "8 套日常穿搭编辑拼贴",
-    "category": "character",
+    "category": "ad",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case398.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-398",
     "author": "@aiwithaly",
@@ -3009,7 +3009,7 @@
   },
   {
     "title": "十国传统服饰时尚拼贴",
-    "category": "character",
+    "category": "ad",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case384.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-384",
     "author": "@amynys",
@@ -3036,7 +3036,7 @@
   },
   {
     "title": "90 年代公寓场景参考板",
-    "category": "landscape",
+    "category": "poster",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case381.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-381",
     "author": "@Iancu_ai",
@@ -3486,7 +3486,7 @@
   },
   {
     "title": "西安手绘水彩城市地图",
-    "category": "landscape",
+    "category": "poster",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case331.png",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-331",
     "author": "苍何原创实测（公众号文章《我逆向了 329 条 GPT-Image2 提示词模板，全部开源！》）",
@@ -3999,7 +3999,7 @@
   },
   {
     "title": "成都吃货暴走手绘美食地图",
-    "category": "landscape",
+    "category": "poster",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case274.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-274",
     "author": "@Panda20230902",
@@ -4035,7 +4035,7 @@
   },
   {
     "title": "信息图可视化设计",
-    "category": "character",
+    "category": "ecommerce",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case270.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-270",
     "author": "\\[OpenNana]\\(]\\(<https://x.com/Toshi_nyaruo_AI/status/2045025277538107420>)",
@@ -4566,7 +4566,7 @@
   },
   {
     "title": "天坛古建拆解全图",
-    "category": "landscape",
+    "category": "poster",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case211.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-2.md#case-211",
     "author": "@TanShilong",
@@ -6339,7 +6339,7 @@
   },
   {
     "title": "一张手绘风格的城市美食地图，以台州为主题",
-    "category": "landscape",
+    "category": "poster",
     "img": "https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main/data/images/case11.jpg",
     "link": "https://github.com/freestylefly/awesome-gpt-image-2/blob/main/docs/gallery-part-1.md#case-11",
     "author": "小红书号510244722",
