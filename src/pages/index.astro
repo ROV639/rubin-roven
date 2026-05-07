@@ -34,6 +34,12 @@ const categoryNames: Record<string, string> = {
 ---
 
 <BaseLayout title="Rubin Roven Prompts">
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center" style="background: rgba(7,18,9,0.95);">
+    <button id="lightbox-close" class="absolute top-6 right-6 w-10 h-10 rounded-full border border-[rgba(0,212,154,0.3)] flex items-center justify-center text-[rgba(200,230,215,0.6)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all">✕</button>
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg" />
+  </div>
+
   <!-- Hero Section -->
   <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
     <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
@@ -87,21 +93,24 @@ const categoryNames: Record<string, string> = {
     <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {prompts.map((p, idx) => (
         <div
-          class="prompt-card rounded-xl overflow-hidden border transition-all duration-400 cursor-pointer group"
+          class="prompt-card rounded-xl overflow-hidden border transition-all duration-400"
           data-category={p.category}
           data-title={p.title.toLowerCase()}
           data-idx={idx}
           style="background: #0a1f12; border-color: rgba(0,212,154,0.2);"
-          onclick={`togglePrompt(${idx})`}
         >
-          <div class="aspect-[4/3] overflow-hidden relative">
+          <!-- Image (click to lightbox) -->
+          <div class="overflow-hidden relative cursor-pointer" onclick={`openLightbox('${p.img}', '${p.title.replace(/'/g, "\\'")}')`}>
             <img
               src={p.img}
               alt={p.title}
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
               loading="lazy"
+              style="max-height: 280px;"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <span class="text-white text-xs tracking-widest" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">点击放大</span>
+            </div>
           </div>
 
           <div class="p-5">
@@ -116,41 +125,58 @@ const categoryNames: Record<string, string> = {
               )}
             </div>
 
-            <h3 class="text-lg font-light tracking-wide mb-2" style="color: var(--text-primary); font-family: 'Cormorant Garamond', serif;">
+            <h3 class="text-lg font-light tracking-wide mb-3" style="color: var(--text-primary); font-family: 'Cormorant Garamond', serif;">
               {p.title}
             </h3>
 
+            <!-- Prompt preview -->
             <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
               <p class="line-clamp-3">{p.prompt}</p>
             </div>
 
+            <!-- Actions -->
             <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
               <button
-                onclick={`event.stopPropagation(); copyPrompt(${idx})`}
+                onclick={`event.stopPropagation(); copyPromptText(${idx})`}
                 data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
                 class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300"
                 style="border-color: rgba(0,212,154,0.25); color: var(--accent);"
               >
                 <span>📋</span> 复制
               </button>
-              <span class="text-xs" style="color: rgba(200,230,215,0.5);">点击展开 ↓</span>
+              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs" style="color: rgba(200,230,215,0.5);">
+                点击展开完整提示词 ↓
+              </button>
             </div>
           </div>
 
+          <!-- Full prompt (hidden) -->
           <div class="prompt-full hidden px-5 pb-5">
-            <div class="text-xs p-4 rounded-lg overflow-auto max-h-[300px]" style="background: rgba(0,0,0,0.4); color: var(--text-primary);">
-              <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt}</pre>
+            <!-- Original prompt -->
+            <div class="mb-3">
+              <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">原文 / Original</p>
+              <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 200px;">
+                <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt}</pre>
+              </div>
             </div>
-            <div class="flex items-center justify-between mt-4 pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
+            <!-- Chinese translation -->
+            <div class="mb-4">
+              <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译 / Chinese</p>
+              <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); border: 1px solid rgba(197,165,114,0.15);">
+                <p class="text-[10px] mb-2" style="color: rgba(197,165,114,0.5);">（由 AI 生成的中文翻译）</p>
+                <p class="text-xs leading-relaxed zh-trans">{p.prompt}</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
               <button
-                onclick={`event.stopPropagation(); copyPrompt(${idx})`}
+                onclick={`event.stopPropagation(); copyPromptText(${idx})`}
                 data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
                 class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
                 style="background: var(--accent); color: #071209;"
               >
-                <span>✓</span> 复制完整提示词
+                <span>✓</span> 复制原文
               </button>
-              <button onclick={`event.stopPropagation(); togglePrompt(${idx})`} class="text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);">
+              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);">
                 收起
               </button>
             </div>
@@ -201,7 +227,34 @@ const categoryNames: Record<string, string> = {
   const cards = document.querySelectorAll('.prompt-card');
   const searchInput = document.getElementById('search-input');
   const emptyState = document.getElementById('empty-state');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
 
+  // Lightbox open/close
+  window.openLightbox = function(imgSrc, title) {
+    lightboxImg.src = imgSrc;
+    lightboxImg.alt = title;
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeLightbox = function() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+  };
+
+  lightboxClose?.addEventListener('click', closeLightbox);
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // Category filter
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const cat = tab.dataset.category;
@@ -217,7 +270,7 @@ const categoryNames: Record<string, string> = {
 
       cards.forEach(card => {
         if (cat === 'all' || card.dataset.category === cat) {
-          card.style.display = 'block';
+          card.style.display = '';
         } else {
           card.style.display = 'none';
         }
@@ -227,13 +280,14 @@ const categoryNames: Record<string, string> = {
     });
   });
 
+  // Search
   searchInput?.addEventListener('input', (e) => {
     const q = e.target.value.toLowerCase();
 
     cards.forEach(card => {
       const title = card.dataset.title || '';
       if (title.includes(q) || q === '') {
-        card.style.display = 'block';
+        card.style.display = '';
       } else {
         card.style.display = 'none';
       }
@@ -247,25 +301,27 @@ const categoryNames: Record<string, string> = {
     emptyState?.classList.toggle('hidden', visible.length > 0);
   }
 
+  // Toggle prompt expand/collapse
   window.togglePrompt = function(idx) {
     const card = document.querySelector(`[data-idx="${idx}"]`);
     if (!card) return;
     const preview = card.querySelector('.prompt-preview');
     const full = card.querySelector('.prompt-full');
-    const toggleBtn = card.querySelector('.flex.items-center.justify-between.pt-3 button:last-child');
+    const toggleBtns = card.querySelectorAll('.prompt-toggle');
 
     if (full?.classList.contains('hidden')) {
       full.classList.remove('hidden');
       preview?.classList.add('hidden');
-      if (toggleBtn) toggleBtn.textContent = '收起';
+      toggleBtns.forEach(b => b.textContent = '收起');
     } else {
       full?.classList.add('hidden');
       preview?.classList.remove('hidden');
-      if (toggleBtn) toggleBtn.textContent = '点击展开 ↓';
+      toggleBtns.forEach(b => b.textContent = '点击展开完整提示词 ↓');
     }
   };
 
-  window.copyPrompt = function(idx) {
+  // Copy prompt
+  window.copyPromptText = function(idx) {
     const card = document.querySelector(`[data-idx="${idx}"]`);
     if (!card) return;
     const btn = event.target.closest('button');
