@@ -14,132 +14,42 @@ const { title = 'Rubin Roven' } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
-    <style is:global>
-      :root {
-        --bg-deep: #071209;
-        --bg-surface: #0a1f12;
-        --accent: #00D49A;
-        --accent-dim: rgba(0, 212, 154, 0.5);
-        --accent-muted: rgba(0, 212, 154, 0.12);
-        --accent-border: rgba(0, 212, 154, 0.2);
-        --text-primary: #E8F5F0;
-        --text-dim: rgba(200, 230, 215, 0.5);
-        --gold-text: #C5A572;
-        --glow: rgba(0, 200, 120, 0.15);
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      html { scroll-behavior: smooth; }
-
-      body {
-        font-family: 'Inter', 'Noto Serif SC', system-ui, sans-serif;
-        background: var(--bg-deep);
-        color: var(--text-primary);
-        min-height: 100vh;
-        overflow-x: hidden;
-      }
-
-      /* Dynamic floating orbs background */
-      body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background:
-          radial-gradient(ellipse at 20% 20%, rgba(0, 212, 154, 0.08) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 80%, rgba(0, 212, 154, 0.05) 0%, transparent 50%),
-          radial-gradient(ellipse at 50% 50%, rgba(10, 31, 18, 0.9) 0%, transparent 70%);
-        pointer-events: none;
-        z-index: 0;
-        animation: orbFloat 15s ease-in-out infinite;
-      }
-
-      /* Noise texture */
-      body::after {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.9%27 numOctaves=%274%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27/%3E%3C/svg%3E");
-        pointer-events: none;
-        z-index: 0;
-        opacity: 0.06;
-        mix-blend-mode: overlay;
-      }
-
-      @keyframes orbFloat {
-        0%, 100% { transform: translate(0, 0) scale(1); }
-        33% { transform: translate(30px, -20px) scale(1.05); }
-        66% { transform: translate(-20px, 20px) scale(0.95); }
-      }
-
-      header { position: relative; z-index: 10; }
-      main { position: relative; z-index: 1; }
-      footer { position: relative; z-index: 10; }
-
-      /* Typography */
-      h1, h2, h3, h4 {
-        font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-      }
-
-      /* Scrollbar */
-      ::-webkit-scrollbar { width: 5px; }
-      ::-webkit-scrollbar-track { background: var(--bg-deep); }
-      ::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-      /* Selection */
-      ::selection { background: rgba(0, 212, 154, 0.3); }
-
-      /* Glass effect */
-      .glass {
-        background: rgba(7, 18, 9, 0.8);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 0.5px solid var(--accent-border);
-      }
-
-      .card {
-        background: var(--bg-surface);
-        border: 0.5px solid var(--accent-border);
-        border-radius: 6px;
-      }
-
-      .accent-text { color: var(--accent); }
-      .dim-text { color: var(--text-dim); }
-    </style>
   </head>
-  <body>
-    <header class="glass sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="/" class="group flex items-baseline gap-2">
-          <span class="text-2xl font-light tracking-[0.12em] text-[var(--gold-text)] uppercase" style="font-family: 'Cormorant Garamond', serif;">RUBIN</span>
-          <span class="text-2xl font-light tracking-[0.12em] text-[var(--gold-text)] uppercase" style="font-family: 'Cormorant Garamond', serif;">ROVEN</span>
-        </a>
-        <nav class="flex gap-10 text-xs tracking-[0.25em] uppercase font-light">
-          <a href="/" class="dim-text hover:accent-text transition-colors duration-300 relative group py-1">
-            Gallery
-            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--accent)] group-hover:w-full transition-all duration-500"></span>
-          </a>
-          <a href="/about" class="dim-text hover:accent-text transition-colors duration-300 relative group py-1">
-            About
-            <span class="absolute bottom-0 left-0 w-0 h-px bg-[var(--accent)] group-hover:w-full transition-all duration-500"></span>
-          </a>
-        </nav>
-      </div>
-    </header>
-    <main>
-      <slot />
-    </main>
-    <footer class="border-t border-[var(--accent-border)] mt-20 relative z-10">
-      <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col items-center gap-2 text-center">
-        <div class="flex items-center gap-3 mb-2">
-          <span class="w-8 h-px bg-[var(--accent)] opacity-60"></span>
-          <span class="accent-text text-xs tracking-[0.3em] uppercase">Est. 2026</span>
-          <span class="w-8 h-px bg-[var(--accent)] opacity-60"></span>
-        </div>
-        <p class="dim-text text-sm font-light tracking-wider">&copy; 2026 Rubin Roven. All rights reserved.</p>
-        <p class="text-[var(--accent)]/30 text-xs tracking-widest uppercase">Crafted with intention</p>
-      </div>
-    </footer>
+  <body style="background:#071209;color:#E8F5F0;min-height:100vh;">
+    <slot />
   </body>
 </html>
+
+<style is:global>
+  :root {
+    --bg-deep: #071209;
+    --bg-surface: #0a1f12;
+    --accent: #00D49A;
+    --accent-dim: rgba(0, 212, 154, 0.5);
+    --accent-muted: rgba(0, 212, 154, 0.12);
+    --accent-border: rgba(0, 212, 154, 0.2);
+    --text-primary: #E8F5F0;
+    --text-dim: rgba(200, 230, 215, 0.5);
+    --gold-text: #C5A572;
+    --glow: rgba(0, 200, 120, 0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Serif SC', system-ui, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--accent-border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  ::selection { background: rgba(0, 212, 154, 0.3); }
+</style>

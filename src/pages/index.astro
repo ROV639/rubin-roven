@@ -1,202 +1,283 @@
 ---
+import promptsData from '../data/prompts.json';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const gallery = [
-  { id: '01', title: '黎明', category: '自然', thumb: 'https://picsum.photos/seed/dawn/400/500', url: '#' },
-  { id: '02', title: '暮色', category: '城市', thumb: 'https://picsum.photos/seed/dusk/400/400', url: '#' },
-  { id: '03', title: '静谧', category: '建筑', thumb: 'https://picsum.photos/seed/quiet/400/600', url: '#' },
-  { id: '04', title: '流动', category: '抽象', thumb: 'https://picsum.photos/seed/flow/400/400', url: '#' },
-  { id: '05', title: '光影', category: '人像', thumb: 'https://picsum.photos/seed/light/400/500', url: '#' },
-  { id: '06', title: '夜色', category: '城市', thumb: 'https://picsum.photos/seed/night/400/400', url: '#' },
+const prompts = promptsData as Array<{
+  img: string;
+  link: string;
+  author: string;
+  prompt: string;
+  title: string;
+  category: string;
+}>;
+
+const categories = [
+  { key: 'all', label: '全部', icon: '◆' },
+  { key: 'ecommerce', label: '电商', icon: '◈' },
+  { key: 'ad', label: '广告', icon: '◇' },
+  { key: 'portrait', label: '人像', icon: '○' },
+  { key: 'poster', label: '海报', icon: '□' },
+  { key: 'character', label: '角色', icon: '△' },
+  { key: 'ui', label: '界面', icon: '▣' },
+  { key: 'comparison', label: '对比', icon: '◐' },
 ];
 
-const categories = ['全部', '自然', '城市', '建筑', '抽象', '人像'];
+const categoryNames: Record<string, string> = {
+  ad: '广告创意',
+  character: '角色设计',
+  comparison: '对比实验',
+  ecommerce: '电商产品',
+  portrait: '人像摄影',
+  poster: '海报插画',
+  ui: '界面设计',
+};
 ---
 
-<BaseLayout title="Gallery — Rubin Roven">
+<BaseLayout title="Awesome GPT Image 2 Prompts">
   <!-- Hero Section -->
-  <section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
     <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-      <!-- Badge -->
-      <div class="inline-block text-xs tracking-[0.3em] uppercase px-4 py-1.5 rounded-full border border-[var(--accent-border)] accent-text mb-10" style="background: rgba(0,212,154,0.08);">
-        Collection
+      <div class="inline-block text-xs tracking-[0.3em] uppercase px-4 py-1.5 rounded-full border mb-8" style="background: rgba(0,212,154,0.1); color: var(--accent); border-color: rgba(0,212,154,0.25);">
+        GPT Image 2 · 精选提示词
       </div>
 
-      <!-- Main titles - same size, same font -->
-      <h1 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-2 text-[var(--gold-text)] hero-title" style="font-family: 'Cormorant Garamond', serif;">
-        RUBIN
+      <h1 class="text-5xl md:text-7xl font-light tracking-[0.1em] leading-none mb-6" style="font-family: 'Cormorant Garamond', serif; color: var(--gold-text);">
+        Awesome Prompts
       </h1>
-      <h2 class="text-6xl md:text-8xl font-light tracking-[0.12em] leading-none mb-10 text-[var(--gold-text)] hero-title" style="font-family: 'Cormorant Garamond', serif;">
-        ROVEN
-      </h2>
 
-      <!-- Subtitle -->
-      <p class="text-lg font-light leading-loose max-w-lg mx-auto mb-14" style="color: var(--text-dim);">
-        记录所见，探索所知。<br />
-        让每一次定格，都成为时间的标本。
+      <p class="text-lg font-light leading-relaxed max-w-xl mx-auto mb-10" style="color: var(--text-dim);">
+        {prompts.length}+ 高质量 GPT-Image-2 提示词<br/>
+        涵盖电商、广告、人像、海报等7大分类
       </p>
 
-      <!-- Decorative divider -->
-      <div class="flex items-center justify-center gap-3 mb-14">
-        <span class="w-1 h-1 rounded-full bg-[var(--accent)] opacity-30"></span>
-        <span class="w-1 h-1 rounded-full bg-[var(--accent)] opacity-50"></span>
-        <span class="w-1 h-1 rounded-full bg-[var(--accent)] opacity-80"></span>
-      </div>
-
-      <!-- CTA Button -->
-      <div class="flex items-center justify-center gap-5">
-        <a href="#gallery" class="group inline-flex items-center gap-3 px-8 py-3 rounded-md border border-[var(--accent-border)] text-[var(--gold-text)] text-sm tracking-[0.2em] uppercase hover:bg-[var(--accent)] hover:text-[var(--bg-deep)] transition-all duration-500" style="background: rgba(0,212,154,0.05);">
-          <span>开始探索</span>
-          <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-          </svg>
-        </a>
+      <div class="relative max-w-md mx-auto">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="搜索提示词..."
+          class="w-full px-6 py-4 rounded-full border text-center text-sm tracking-wider transition-all duration-300"
+          style="background: rgba(14,30,18,0.8); border-color: rgba(0,212,154,0.25); color: var(--text-primary);"
+        />
+        <span class="absolute left-6 top-1/2 -translate-y-1/2" style="color: var(--text-dim);">🔍</span>
       </div>
     </div>
   </section>
 
-  <!-- Gallery Section -->
-  <section id="gallery" class="max-w-7xl mx-auto px-6 py-24">
-    <!-- Section header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-      <div>
-        <div class="flex items-center gap-3 mb-3">
-          <span class="w-8 h-px bg-[var(--accent)]"></span>
-          <span class="accent-text text-xs tracking-[0.3em] uppercase">Gallery</span>
-        </div>
-        <h2 class="text-4xl font-light tracking-tight text-[var(--gold-text)]" style="font-family: 'Cormorant Garamond', serif;">精选作品</h2>
-      </div>
-
-      <!-- Category filters -->
-      <div class="flex flex-wrap gap-2">
+  <!-- Category Tabs -->
+  <section class="sticky top-0 z-40 py-4 px-6" style="background: rgba(7,18,9,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,212,154,0.2);">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-2" id="category-tabs">
         {categories.map((cat, i) => (
           <button
-            data-category={cat === '全部' ? 'all' : cat}
-            class={`px-5 py-2 text-xs tracking-[0.15em] uppercase border rounded-md transition-all duration-400 ${
-              i === 0
-                ? 'bg-[var(--accent)] text-[var(--bg-deep)] border-[var(--accent)]'
-                : 'border-[var(--accent-border)] text-[var(--gold-text)]/60 hover:border-[var(--accent)] hover:text-[var(--gold-text)]'
-            }`}
-            style="font-family: 'Cormorant Garamond', serif;"
+            data-category={cat.key}
+            class="px-5 py-2 text-xs tracking-[0.15em] uppercase rounded-full transition-all duration-300 border"
+            style={i === 0
+              ? 'background: var(--accent); color: #071209; border-color: var(--accent);'
+              : 'border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);'}
           >
-            {cat}
+            <span class="mr-1">{cat.icon}</span>{cat.label}
           </button>
         ))}
       </div>
     </div>
+  </section>
 
-    <!-- Gallery grid -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-6" id="gallery-grid">
-      {gallery.map((img, i) => (
-        <a
-          href={img.url}
-          class={`group block relative overflow-hidden cursor-pointer card ${
-            i % 3 === 1 ? 'md:mt-10' : ''
-          } ${i % 3 === 2 ? 'md:mt-5' : ''}`}
-          data-category={img.category}
-          style={`animation: fadeInUp 0.7s ease-out ${i * 0.12}s both;`}
+  <!-- Prompts Grid -->
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {prompts.map((p, idx) => (
+        <div
+          class="prompt-card rounded-xl overflow-hidden border transition-all duration-400 cursor-pointer group"
+          data-category={p.category}
+          data-title={p.title.toLowerCase()}
+          data-idx={idx}
+          style="background: #0a1f12; border-color: rgba(0,212,154,0.2);"
+          onclick={`togglePrompt(${idx})`}
         >
-          <div class="aspect-[4/5] w-full overflow-hidden">
+          <div class="aspect-[4/3] overflow-hidden relative">
             <img
-              src={img.thumb}
-              alt={img.title}
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              src={p.img}
+              alt={p.title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
             />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
 
-          <!-- Overlay -->
-          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6" style="background: linear-gradient(to top, rgba(7,18,9,0.9) 0%, rgba(7,18,9,0.4) 50%, transparent 100%);">
-            <span class="accent-text text-[10px] tracking-[0.3em] uppercase mb-1 opacity-80">{img.category}</span>
-            <h3 class="text-[var(--text-primary)] text-xl font-light tracking-wide">{img.title}</h3>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
+                {categoryNames[p.category] || p.category}
+              </span>
+              {p.author && (
+                <span class="text-[10px] tracking-wider" style="color: rgba(200,230,215,0.5);">
+                  {p.author}
+                </span>
+              )}
+            </div>
+
+            <h3 class="text-lg font-light tracking-wide mb-2" style="color: var(--text-primary); font-family: 'Cormorant Garamond', serif;">
+              {p.title}
+            </h3>
+
+            <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
+              <p class="line-clamp-3">{p.prompt}</p>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
+              <button
+                onclick={`event.stopPropagation(); copyPrompt(${idx})`}
+                data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
+                class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300"
+                style="border-color: rgba(0,212,154,0.25); color: var(--accent);"
+              >
+                <span>📋</span> 复制
+              </button>
+              <span class="text-xs" style="color: rgba(200,230,215,0.5);">点击展开 ↓</span>
+            </div>
           </div>
 
-          <!-- Corner accent -->
-          <div class="absolute top-4 left-4 w-6 h-6 border-l border-t border-[var(--accent)]/0 group-hover:border-[var(--accent)]/50 transition-all duration-500"></div>
-          <div class="absolute bottom-4 right-4 w-6 h-6 border-r border-b border-[var(--accent)]/0 group-hover:border-[var(--accent)]/50 transition-all duration-500"></div>
-        </a>
+          <div class="prompt-full hidden px-5 pb-5">
+            <div class="text-xs p-4 rounded-lg overflow-auto max-h-[300px]" style="background: rgba(0,0,0,0.4); color: var(--text-primary);">
+              <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt}</pre>
+            </div>
+            <div class="flex items-center justify-between mt-4 pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
+              <button
+                onclick={`event.stopPropagation(); copyPrompt(${idx})`}
+                data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
+                class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
+                style="background: var(--accent); color: #071209;"
+              >
+                <span>✓</span> 复制完整提示词
+              </button>
+              <button onclick={`event.stopPropagation(); togglePrompt(${idx})`} class="text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);">
+                收起
+              </button>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
 
-    <!-- Empty state -->
-    <div id="empty-state" class="hidden text-center py-32">
-      <p class="dim-text text-lg font-light tracking-wide mb-2">暂无匹配内容</p>
-      <p class="text-[var(--accent)]/30 text-sm">更多内容持续上传中</p>
+    <div id="empty-state" class="hidden text-center py-20">
+      <p class="text-2xl mb-2" style="color: var(--gold-text); font-family: 'Cormorant Garamond', serif;">暂无匹配</p>
+      <p class="text-sm" style="color: rgba(200,230,215,0.5);">尝试其他关键词或分类</p>
     </div>
   </section>
+
+  <!-- Footer -->
+  <footer class="border-t py-10 px-6" style="border-color: rgba(0,212,154,0.2);">
+    <div class="max-w-6xl mx-auto text-center">
+      <p class="text-xs tracking-widest uppercase mb-4" style="color: var(--gold-text);">Awesome GPT Image 2 Prompts</p>
+      <p style="color: rgba(200,230,215,0.5);">
+        基于 <a href="https://github.com/EvoLinkAI/awesome-gpt-image-2-API-and-Prompts" target="_blank" class="underline" style="color: var(--accent);">EvolinkAI/awesome-gpt-image-2</a> · 仅供学习参考
+      </p>
+    </div>
+  </footer>
 </BaseLayout>
 
 <style>
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  /* Hero title hover - normal state is gold, hover makes it white */
-  .hero-title {
-    color: var(--gold-text);
-    transition: color 0.4s ease, transform 0.4s ease;
-    display: inline-block;
-    cursor: default;
-  }
-  .hero-title:hover {
-    color: var(--text-primary);
-    transform: translateY(-2px);
+  .prompt-card:hover {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 30px rgba(0,212,154,0.15);
   }
 
-  /* Button hover effects */
-  button[data-category] {
-    transition: all 0.4s ease;
-  }
-  button[data-category]:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 212, 154, 0.15);
-  }
-
-  /* CTA button hover */
-  a[href="#gallery"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 212, 154, 0.25);
-  }
-  a[href="#gallery"]:hover svg {
-    animation: bounceDown 0.6s ease infinite;
-  }
-  @keyframes bounceDown {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(3px); }
-  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #071209; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,212,154,0.25); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 </style>
 
-<script>
-  const buttons = document.querySelectorAll('button[data-category]');
-  const items = document.querySelectorAll('#gallery-grid a');
+<script define:vars={{ prompts }}>
+{
+  const tabs = document.querySelectorAll('#category-tabs button');
+  const cards = document.querySelectorAll('.prompt-card');
+  const searchInput = document.getElementById('search-input');
   const emptyState = document.getElementById('empty-state');
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.getAttribute('data-category');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const cat = tab.dataset.category;
 
-      buttons.forEach(b => {
-        b.classList.remove('bg-[var(--accent)]', 'text-[var(--bg-deep)]', 'border-[var(--accent)]');
-        b.classList.add('border-[var(--accent-border)]', 'dim-text');
+      tabs.forEach(t => {
+        t.style.background = 'transparent';
+        t.style.color = 'rgba(200,230,215,0.5)';
+        t.style.borderColor = 'rgba(0,212,154,0.25)';
       });
-      btn.classList.add('bg-[var(--accent)]', 'text-[var(--bg-deep)]', 'border-[var(--accent)]');
-      btn.classList.remove('border-[var(--accent-border)]', 'dim-text');
+      tab.style.background = 'var(--accent)';
+      tab.style.color = '#071209';
+      tab.style.borderColor = 'var(--accent)';
 
-      let visible = 0;
-      items.forEach(item => {
-        const itemCat = item.getAttribute('data-category');
-        if (cat === 'all' || itemCat === cat) {
-          item.style.display = 'block';
-          visible++;
+      cards.forEach(card => {
+        if (cat === 'all' || card.dataset.category === cat) {
+          card.style.display = 'block';
         } else {
-          item.style.display = 'none';
+          card.style.display = 'none';
         }
       });
 
-      if (emptyState) {
-        emptyState.classList.toggle('hidden', visible > 0);
-      }
+      checkEmpty();
     });
   });
+
+  searchInput?.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+
+    cards.forEach(card => {
+      const title = card.dataset.title || '';
+      if (title.includes(q) || q === '') {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    checkEmpty();
+  });
+
+  function checkEmpty() {
+    const visible = [...cards].filter(c => c.style.display !== 'none');
+    emptyState?.classList.toggle('hidden', visible.length > 0);
+  }
+
+  window.togglePrompt = function(idx) {
+    const card = document.querySelector(`[data-idx="${idx}"]`);
+    if (!card) return;
+    const preview = card.querySelector('.prompt-preview');
+    const full = card.querySelector('.prompt-full');
+    const toggleBtn = card.querySelector('.flex.items-center.justify-between.pt-3 button:last-child');
+
+    if (full?.classList.contains('hidden')) {
+      full.classList.remove('hidden');
+      preview?.classList.add('hidden');
+      if (toggleBtn) toggleBtn.textContent = '收起';
+    } else {
+      full?.classList.add('hidden');
+      preview?.classList.remove('hidden');
+      if (toggleBtn) toggleBtn.textContent = '点击展开 ↓';
+    }
+  };
+
+  window.copyPrompt = function(idx) {
+    const card = document.querySelector(`[data-idx="${idx}"]`);
+    if (!card) return;
+    const btn = event.target.closest('button');
+    if (!btn) return;
+    const promptData = btn.dataset.prompt;
+    navigator.clipboard.writeText(promptData).then(() => {
+      const original = btn.innerHTML;
+      btn.innerHTML = '<span>✓</span> 已复制';
+      setTimeout(() => {
+        btn.innerHTML = original;
+      }, 1500);
+    });
+  };
+}
 </script>
