@@ -47,7 +47,7 @@ const categoryNames: Record<string, string> = {
         GPT Image 2 · 精选提示词
       </div>
 
-      <h1 class="text-5xl md:text-7xl font-light tracking-[0.1em] leading-none mb-6" style="font-family: 'Cormorant Garamond', serif; color: var(--gold-text);">
+      <h1 class="text-5xl md:text-7xl font-light tracking-[0.1em] leading-none mb-6 artistic-title" style="color: var(--gold-text);">
         Rubin Roven Prompts
       </h1>
 
@@ -79,9 +79,9 @@ const categoryNames: Record<string, string> = {
             class="px-5 py-2 text-xs tracking-[0.15em] uppercase rounded-full transition-all duration-300 border"
             style={i === 0
               ? 'background: var(--accent); color: #071209; border-color: var(--accent);'
-              : 'border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.6);'}
+              : 'border-color: rgba(0,212,154,0.25); color: rgba(200,230,215,0.5);'}
           >
-            <span class="mr-1">{cat.icon}</span>{cat.label}
+            <span class="mr-1" style="color: rgba(197,165,114,0.8);">{cat.icon}</span><span class="cat-label">{cat.label}</span>
           </button>
         ))}
       </div>
@@ -90,14 +90,14 @@ const categoryNames: Record<string, string> = {
 
   <!-- Prompts Grid -->
   <section class="max-w-7xl mx-auto px-6 py-12">
-    <div id="prompts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div id="prompts-grid" class="columns-2 md:columns-3 lg:columns-4 gap-4" style="column-gap: 1rem;">
       {prompts.map((p, idx) => (
         <div
-          class="prompt-card rounded-xl overflow-hidden border transition-all duration-400"
+          class="prompt-card overflow-hidden transition-all duration-400"
           data-category={p.category}
           data-title={p.title.toLowerCase()}
           data-idx={idx}
-          style="background: #0a1f12; border-color: rgba(0,212,154,0.2);"
+          style="background: #0a1f12;"
         >
           <!-- Image (click to lightbox) -->
           <div class="overflow-hidden relative cursor-pointer" onclick={`openLightbox('${p.img}', '${p.title.replace(/'/g, "\\'")}')`}>
@@ -210,15 +210,31 @@ const categoryNames: Record<string, string> = {
     overflow: hidden;
   }
 
+  /* Category tabs - icon gold, label dim */
+  .cat-label { color: rgba(200,230,215,0.5); }
+  button[data-category]:hover .cat-label { color: rgba(197,165,114,0.9); }
+  button[data-category][style*="background: var(--accent)"] .cat-label { color: #071209; }
+
+  .prompt-card {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
   .prompt-card:hover {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 30px rgba(0,212,154,0.15);
+    box-shadow: 0 0 30px rgba(0,212,154,0.2);
   }
 
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: #071209; }
   ::-webkit-scrollbar-thumb { background: rgba(0,212,154,0.25); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* Artistic title font */
+  .artistic-title {
+    font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
 </style>
 
 <script define:vars={{ prompts }}>
