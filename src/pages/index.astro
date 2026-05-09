@@ -2,6 +2,8 @@
 import promptsData from '../data/prompts.json';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const PAGE_SIZE = 100;
+
 const prompts = promptsData as Array<{
   img: string;
   link: string;
@@ -33,6 +35,9 @@ const categoryNames: Record<string, string> = {
   ui: '界面设计',
   landscape: '风景建筑',
 };
+
+const totalPages = Math.ceil(prompts.length / PAGE_SIZE);
+const initialPrompts = prompts.slice(0, PAGE_SIZE);
 ---
 
 <BaseLayout title="Rubin Roven Prompts">
@@ -43,18 +48,18 @@ const categoryNames: Record<string, string> = {
   </div>
 
   <!-- Hero Section -->
-  <section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+  <section class="relative min-h-[40vh] flex items-center justify-center overflow-hidden">
     <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-      <div class="inline-block text-xs tracking-[0.3em] uppercase px-4 py-1.5 rounded-full border mb-8" style="background: rgba(0,212,154,0.1); color: var(--accent); border-color: rgba(0,212,154,0.25);">
+      <div class="inline-block text-xs tracking-[0.3em] uppercase px-4 py-1.5 rounded-full border mb-6" style="background: rgba(0,212,154,0.1); color: var(--accent); border-color: rgba(0,212,154,0.25);">
         GPT Image 2 · 精选提示词
       </div>
 
-      <h1 class="text-5xl md:text-7xl font-light tracking-[0.1em] leading-none mb-6 artistic-title" style="color: var(--gold-text);">
+      <h1 class="text-4xl md:text-6xl font-light tracking-[0.1em] leading-none mb-4 artistic-title" style="color: var(--gold-text);">
         Rubin Roven Prompts
       </h1>
 
-      <p class="text-xs tracking-widest uppercase mb-3" style="color: rgba(197,165,114,0.5);">{prompts.length} Prompts</p>
-      <p class="text-lg font-light leading-relaxed max-w-xl mx-auto mb-10" style="color: var(--gold-text);">
+      <p class="text-xs tracking-widest uppercase mb-3" style="color: rgba(197,165,114,0.5);">{prompts.length} Prompts · 第1/{totalPages}页</p>
+      <p class="text-base font-light leading-relaxed max-w-xl mx-auto mb-8" style="color: var(--gold-text);">
         高质量 GPT-Image-2 提示词<br/>
         涵盖电商、广告、人像、海报等{categories.filter(c => c.key !== 'all').length}大分类
       </p>
@@ -64,7 +69,7 @@ const categoryNames: Record<string, string> = {
           type="text"
           id="search-input"
           placeholder="搜索提示词..."
-          class="w-full px-6 py-4 rounded-full border text-center text-sm tracking-wider transition-all duration-300"
+          class="w-full px-6 py-3 rounded-full border text-center text-sm tracking-wider transition-all duration-300"
           style="background: rgba(14,30,18,0.8); border-color: rgba(0,212,154,0.25); color: var(--text-primary);"
         />
         <span class="absolute left-6 top-1/2 -translate-y-1/2" style="color: var(--text-dim);">🔍</span>
@@ -94,7 +99,7 @@ const categoryNames: Record<string, string> = {
   <!-- Prompts Grid -->
   <section class="max-w-7xl mx-auto px-6 py-12">
     <div id="prompts-grid" class="columns-2 md:columns-3 lg:columns-4 gap-4" style="column-gap: 1rem;">
-      {prompts.map((p, idx) => (
+      {initialPrompts.map((p, idx) => (
         <div
           class="prompt-card overflow-hidden transition-all duration-400"
           data-category={p.category}
@@ -192,6 +197,19 @@ const categoryNames: Record<string, string> = {
       <p class="text-2xl mb-2" style="color: var(--gold-text); font-family: 'Cormorant Garamond', serif;">暂无匹配</p>
       <p class="text-sm" style="color: rgba(200,230,215,0.5);">尝试其他关键词或分类</p>
     </div>
+
+    <!-- Pagination -->
+    <div id="pagination" class="flex justify-center items-center gap-2 mt-8 py-6">
+      <button id="prev-btn" class="px-4 py-2 rounded-full border text-xs tracking-wider transition-all duration-300 disabled:opacity-30" style="border-color: rgba(0,212,154,0.25); color: var(--accent);" disabled>
+        ← 上一页
+      </button>
+      <span id="page-info" class="px-4 py-2 text-xs tracking-wider" style="color: var(--gold-text);">
+        1 / {totalPages}
+      </span>
+      <button id="next-btn" class="px-4 py-2 rounded-full border text-xs tracking-wider transition-all duration-300" style="border-color: rgba(0,212,154,0.25); color: var(--accent);">
+        下一页 →
+      </button>
+    </div>
   </section>
 
   <!-- Footer -->
@@ -240,17 +258,30 @@ const categoryNames: Record<string, string> = {
   }
 </style>
 
-<script define:vars={{ prompts }}>
+<script define:vars={{ prompts, PAGE_SIZE, totalPages }}>
 {
   const tabs = document.querySelectorAll('#category-tabs button');
-  const cards = document.querySelectorAll('.prompt-card');
+  const grid = document.getElementById('prompts-grid');
   const searchInput = document.getElementById('search-input');
   const emptyState = document.getElementById('empty-state');
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const lightboxClose = document.getElementById('lightbox-close');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const pageInfo = document.getElementById('page-info');
 
-  // Lightbox open/close
+  let currentPage = 1;
+  let currentCategory = 'all';
+  let currentSearch = '';
+
+  const categoryNames = {
+    ad: '广告创意', character: '角色设计', comparison: '对比实验',
+    ecommerce: '电商产品', portrait: '人像摄影', poster: '海报插画',
+    ui: '界面设计', landscape: '风景建筑',
+  };
+
+  // Lightbox
   window.openLightbox = function(imgSrc, title) {
     lightboxImg.src = imgSrc;
     lightboxImg.alt = title;
@@ -266,18 +297,109 @@ const categoryNames: Record<string, string> = {
   };
 
   lightboxClose?.addEventListener('click', closeLightbox);
-  lightbox?.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-  });
+  lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Get filtered prompts
+  function getFilteredPrompts() {
+    return prompts.filter(p => {
+      const matchCat = currentCategory === 'all' || p.category === currentCategory;
+      const matchSearch = currentSearch === '' || p.title.toLowerCase().includes(currentSearch);
+      return matchCat && matchSearch;
+    });
+  }
+
+  // Render page
+  function renderPage(page) {
+    const filtered = getFilteredPrompts();
+    const totalFilteredPages = Math.ceil(filtered.length / PAGE_SIZE);
+    if (page < 1) page = 1;
+    if (page > totalFilteredPages) page = totalFilteredPages || 1;
+    currentPage = page;
+
+    const start = (page - 1) * PAGE_SIZE;
+    const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+    grid.innerHTML = pageItems.map((p, i) => `
+      <div class="prompt-card overflow-hidden transition-all duration-400"
+           data-category="${p.category}" data-title="${p.title.toLowerCase()}" data-idx="${start + i}"
+           style="background: #0a1f12;">
+        <div class="overflow-hidden relative cursor-pointer" onclick="openLightbox('${p.img.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}')">
+          <img src="${p.img}" alt="${p.title}" class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
+               loading="lazy" style="max-height: 280px;" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <span class="text-white text-xs tracking-widest" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">点击放大</span>
+          </div>
+        </div>
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
+              ${categoryNames[p.category] || p.category}
+            </span>
+            ${p.author ? `<span class="text-[10px] tracking-wider" style="color: rgba(200,230,215,0.5);">${p.author}</span>` : ''}
+          </div>
+          <h3 class="text-lg font-light tracking-wide mb-3" style="color: var(--text-primary); font-family: 'Cormorant Garamond', serif;">
+            ${p.title}
+          </h3>
+          <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
+            <p class="line-clamp-3">${p.prompt}</p>
+          </div>
+          <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
+            <button onclick="event.stopPropagation(); copyPromptText(${start + i})"
+                    data-prompt="${p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}"
+                    class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300"
+                    style="border-color: rgba(0,212,154,0.25); color: var(--accent);">
+              <span>📋</span> 复制
+            </button>
+            <button onclick="togglePrompt(${start + i})" class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">
+              点击展开完整提示词 ↓
+            </button>
+          </div>
+        </div>
+        <div class="prompt-full hidden px-5 pb-5">
+          <div class="mb-3">
+            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">原文 / Original</p>
+            <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 200px;">
+              <pre class="whitespace-pre-wrap text-xs leading-relaxed">${p.prompt}</pre>
+            </div>
+          </div>
+          <div class="mb-4">
+            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译 / Chinese</p>
+            <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); border: 1px solid rgba(197,165,114,0.15);">
+              <p class="text-[10px] mb-2" style="color: rgba(197,165,114,0.5);">（由 AI 生成的中文翻译）</p>
+              <p class="text-xs leading-relaxed zh-trans">${p.prompt}</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
+            <button onclick="event.stopPropagation(); copyPromptText(${start + i})"
+                    data-prompt="${p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}"
+                    class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
+                    style="background: var(--accent); color: #071209;">
+              <span>✓</span> 复制原文
+            </button>
+            <button onclick="togglePrompt(${start + i})" class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
+              收起
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    const totalFiltered = Math.ceil(filtered.length / PAGE_SIZE);
+    pageInfo.textContent = `${page} / ${totalFiltered || 1}`;
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalFiltered;
+    emptyState?.classList.toggle('hidden', filtered.length > 0);
+  }
+
+  // Pagination
+  prevBtn?.addEventListener('click', () => renderPage(currentPage - 1));
+  nextBtn?.addEventListener('click', () => renderPage(currentPage + 1));
 
   // Category filter
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      const cat = tab.dataset.category;
-
+      currentCategory = tab.dataset.category;
       tabs.forEach(t => {
         t.style.background = 'transparent';
         t.style.color = 'rgba(200,230,215,0.5)';
@@ -286,48 +408,23 @@ const categoryNames: Record<string, string> = {
       tab.style.background = 'var(--accent)';
       tab.style.color = '#071209';
       tab.style.borderColor = 'var(--accent)';
-
-      cards.forEach(card => {
-        if (cat === 'all' || card.dataset.category === cat) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      checkEmpty();
+      renderPage(1);
     });
   });
 
   // Search
   searchInput?.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-
-    cards.forEach(card => {
-      const title = card.dataset.title || '';
-      if (title.includes(q) || q === '') {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-
-    checkEmpty();
+    currentSearch = e.target.value.toLowerCase();
+    renderPage(1);
   });
 
-  function checkEmpty() {
-    const visible = [...cards].filter(c => c.style.display !== 'none');
-    emptyState?.classList.toggle('hidden', visible.length > 0);
-  }
-
-  // Toggle prompt expand/collapse
+  // Toggle prompt
   window.togglePrompt = function(idx) {
-    const card = document.querySelector(`[data-idx="${idx}"]`);
+    const card = grid.querySelector(`[data-idx="${idx}"]`);
     if (!card) return;
     const preview = card.querySelector('.prompt-preview');
     const full = card.querySelector('.prompt-full');
     const toggleBtns = card.querySelectorAll('.prompt-toggle');
-
     if (full?.classList.contains('hidden')) {
       full.classList.remove('hidden');
       preview?.classList.add('hidden');
@@ -341,17 +438,13 @@ const categoryNames: Record<string, string> = {
 
   // Copy prompt
   window.copyPromptText = function(idx) {
-    const card = document.querySelector(`[data-idx="${idx}"]`);
-    if (!card) return;
     const btn = event.target.closest('button');
     if (!btn) return;
     const promptData = btn.dataset.prompt;
     navigator.clipboard.writeText(promptData).then(() => {
       const original = btn.innerHTML;
       btn.innerHTML = '<span>✓</span> 已复制';
-      setTimeout(() => {
-        btn.innerHTML = original;
-      }, 1500);
+      setTimeout(() => { btn.innerHTML = original; }, 1500);
     });
   };
 }
