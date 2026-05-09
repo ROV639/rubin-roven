@@ -139,7 +139,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 
             <!-- Prompt preview -->
             <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
-              <p class="line-clamp-3">{p.zh_prompt || p.prompt}</p>
+              <p class="line-clamp-3">{p.prompt}</p>
             </div>
 
             <!-- Actions -->
@@ -160,16 +160,6 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 
           <!-- Full prompt (hidden) -->
           <div class="prompt-full hidden px-5 pb-5">
-            <!-- Chinese translation (if available) -->
-            {p.zh_prompt && (
-              <div class="mb-3">
-                <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译</p>
-                <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); max-height: 300px; overflow: auto;">
-                  <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.zh_prompt}</pre>
-                </div>
-              </div>
-            )}
-            <!-- Original prompt -->
             <div class="mb-3">
               <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
               <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
@@ -343,7 +333,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
             ${p.title}
           </h3>
           <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
-            <p class="line-clamp-3">${p.zh_prompt || p.prompt}</p>
+            <p class="line-clamp-3">${p.prompt}</p>
           </div>
           <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
             <button onclick="event.stopPropagation(); copyPromptText(${start + i})"
@@ -358,14 +348,6 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
           </div>
         </div>
         <div class="prompt-full hidden px-5 pb-5">
-          ${p.zh_prompt ? `
-          <div class="mb-3">
-            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译</p>
-            <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); max-height: 300px; overflow: auto;">
-              <pre class="whitespace-pre-wrap text-xs leading-relaxed">${p.zh_prompt}</pre>
-            </div>
-          </div>
-          ` : ''}
           <div class="mb-3">
             <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
             <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
