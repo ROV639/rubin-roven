@@ -162,17 +162,9 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
           <div class="prompt-full hidden px-5 pb-5">
             <!-- Original prompt -->
             <div class="mb-3">
-              <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">原文 / Original</p>
-              <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 200px;">
+              <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
+              <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
                 <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt}</pre>
-              </div>
-            </div>
-            <!-- Chinese translation -->
-            <div class="mb-4">
-              <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译 / Chinese</p>
-              <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); border: 1px solid rgba(197,165,114,0.15);">
-                <p class="text-[10px] mb-2" style="color: rgba(197,165,114,0.5);">（由 AI 生成的中文翻译）</p>
-                <p class="text-xs leading-relaxed zh-trans">{p.prompt}</p>
               </div>
             </div>
             <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
@@ -182,7 +174,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
                 class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
                 style="background: var(--accent); color: #071209;"
               >
-                <span>✓</span> 复制原文
+                <span>✓</span> 复制提示词
               </button>
               <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
                 收起
@@ -358,16 +350,9 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
         </div>
         <div class="prompt-full hidden px-5 pb-5">
           <div class="mb-3">
-            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">原文 / Original</p>
-            <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 200px;">
+            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
+            <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
               <pre class="whitespace-pre-wrap text-xs leading-relaxed">${p.prompt}</pre>
-            </div>
-          </div>
-          <div class="mb-4">
-            <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--gold-text);">中文翻译 / Chinese</p>
-            <div class="text-xs p-4 rounded-lg" style="background: rgba(197,165,114,0.08); color: rgba(200,230,215,0.7); border: 1px solid rgba(197,165,114,0.15);">
-              <p class="text-[10px] mb-2" style="color: rgba(197,165,114,0.5);">（由 AI 生成的中文翻译）</p>
-              <p class="text-xs leading-relaxed zh-trans">${p.prompt}</p>
             </div>
           </div>
           <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
@@ -375,7 +360,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
                     data-prompt="${p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}"
                     class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
                     style="background: var(--accent); color: #071209;">
-              <span>✓</span> 复制原文
+              <span>✓</span> 复制提示词
             </button>
             <button onclick="togglePrompt(${start + i})" class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
               收起
