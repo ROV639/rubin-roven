@@ -249,7 +249,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
   }
 </style>
 
-<script define:vars={{ prompts, PAGE_SIZE, totalPages }}>
+<script define:vars={{ initialPrompts, PAGE_SIZE, totalPages }}>
 {
   const tabs = document.querySelectorAll('#category-tabs button');
   const grid = document.getElementById('prompts-grid');
@@ -265,6 +265,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
   let currentPage = 1;
   let currentCategory = 'all';
   let currentSearch = '';
+  let allPrompts = null; // Lazy load
 
   const categoryNames = {
     ad: '广告创意', character: '角色设计', comparison: '对比实验',
@@ -291,8 +292,22 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
   lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
+  // Load all prompts on demand
+  async function loadAllPrompts() {
+    if (allPrompts) return allPrompts;
+    try {
+      const res = await fetch('/data/prompts.json');
+      allPrompts = await res.json();
+    } catch (e) {
+      console.error('Failed to load prompts', e);
+      allPrompts = initialPrompts;
+    }
+    return allPrompts;
+  }
+
   // Get filtered prompts
-  function getFilteredPrompts() {
+  async function getFilteredPrompts() {
+    const prompts = await loadAllPrompts();
     return prompts.filter(p => {
       const matchCat = currentCategory === 'all' || p.category === currentCategory;
       const matchSearch = currentSearch === '' || p.title.toLowerCase().includes(currentSearch);
@@ -301,15 +316,15 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
   }
 
   // Render page
-  function renderPage(page) {
-    const filtered = getFilteredPrompts();
-    const totalFilteredPages = Math.ceil(filtered.length / PAGE_SIZE);
+  async function renderPage(page) {
+    const prompts = await getFilteredPrompts();
+    const totalFilteredPages = Math.ceil(prompts.length / PAGE_SIZE);
     if (page < 1) page = 1;
     if (page > totalFilteredPages) page = totalFilteredPages || 1;
     currentPage = page;
 
     const start = (page - 1) * PAGE_SIZE;
-    const pageItems = filtered.slice(start, start + PAGE_SIZE);
+    const pageItems = prompts.slice(start, start + PAGE_SIZE);
 
     grid.innerHTML = pageItems.map((p, i) => `
       <div class="prompt-card overflow-hidden transition-all duration-400"
@@ -369,11 +384,11 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
       </div>
     `).join('');
 
-    const totalFiltered = Math.ceil(filtered.length / PAGE_SIZE);
+    const totalFiltered = Math.ceil(prompts.length / PAGE_SIZE);
     pageInfo.textContent = `${page} / ${totalFiltered || 1}`;
     prevBtn.disabled = page <= 1;
     nextBtn.disabled = page >= totalFiltered;
-    emptyState?.classList.toggle('hidden', filtered.length > 0);
+    emptyState?.classList.toggle('hidden', prompts.length > 0);
   }
 
   // Pagination
@@ -382,7 +397,7 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 
   // Category filter
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', async () => {
       currentCategory = tab.dataset.category;
       tabs.forEach(t => {
         t.style.background = 'transparent';
@@ -392,13 +407,15 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
       tab.style.background = 'var(--accent)';
       tab.style.color = '#071209';
       tab.style.borderColor = 'var(--accent)';
+      await loadAllPrompts();
       renderPage(1);
     });
   });
 
   // Search
-  searchInput?.addEventListener('input', (e) => {
+  searchInput?.addEventListener('input', async (e) => {
     currentSearch = e.target.value.toLowerCase();
+    await loadAllPrompts();
     renderPage(1);
   });
 
