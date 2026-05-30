@@ -103,6 +103,22 @@ with open('awesome-gpt-image-2/data/cases.json') as f:
 cases = data.get('cases', [])
 base_url = 'https://raw.githubusercontent.com/freestylefly/awesome-gpt-image-2/main'
 
+cat_map = {
+    'Photography & Realism': 'portrait',
+    'Products & E-commerce': 'ecommerce',
+    'Characters & People': 'character',
+    'UI & Interfaces': 'ui',
+    'Architecture & Spaces': 'landscape',
+    'Posters & Typography': 'poster',
+    'Charts & Infographics': 'ad',
+    'Brand & Logos': 'ad',
+    'Illustration & Art': 'character',
+    'Scenes & Storytelling': 'ad',
+    'History & Classical Themes': 'poster',
+    'Documents & Publishing': 'ad',
+    'Other Use Cases': 'ad',
+}
+
 results = []
 for case in cases:
     title = case.get('title', '')
@@ -110,6 +126,7 @@ for case in cases:
     source_url = case.get('sourceUrl', '')
     source_label = case.get('sourceLabel', '')
     image = case.get('image', '')
+    category = case.get('category', '')
 
     if not title:
         continue
@@ -125,7 +142,7 @@ for case in cases:
         'author': source_label.replace('@', '') if source_label else '',
         'prompt': prompt_text,
         'title': title,
-        'category': 'ad',
+        'category': cat_map.get(category, 'ad'),
         '_date': '2000-01-01',
         '_source': 'freestylefly'
     })
