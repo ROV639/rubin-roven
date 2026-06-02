@@ -1,0 +1,47 @@
+name: sync
+
+# 触发:
+#   - workflow_dispatch: 手动 (Cloudflare Worker cron 调, 或本地 gh CLI)
+#   - schedule: 备用, 防止 Worker 故障时还能跑
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'   # 每天 01:00 UTC (= 09:00 北京时间)
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run sync
+        run: |
+          bash sync_upstream.sh 2>&1 | tail -60
+
+      - name: Copy to public/
+        run: |
+          cp src/data/prompts.json public/data/prompts.json
+
+      - name: Verify build
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: Commit & push
+        run: |
+          git config user.name "rubin-roven-sync-bot"
+          git config user.email "sync@rubin-roven.ccwu.cc"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "sync: $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push origin master

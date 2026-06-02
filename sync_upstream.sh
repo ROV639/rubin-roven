@@ -2,10 +2,12 @@
 # Sync prompts from upstream repos
 # Usage: ./sync_upstream.sh
 #
-# Data sources:
-# 1. EvoLinkAI/awesome-gpt-image-2-prompts (GitHub)
-# 2. freestylefly/awesome-gpt-image-2 (GitHub)
-# 3. gpt-image2/awesome-gptimage2-prompts (GitHub raw JSON)
+# Data sources (5 个, by priority):
+#   1. YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill  (Gemini, 14k+, 11-cat manifest)
+#   2. gpt-image2/awesome-gptimage2-prompts                    (ChatGPT, 2.6k, raw JSON)
+#   3. EvoLinkAI/awesome-gpt-image-2-prompts                   (ChatGPT, 0.5k, dir-based images)
+#   4. freestylefly/awesome-gpt-image-2                        (ChatGPT, 0.3k, cases.json)
+#   5. cuigh/awesome-nano-banana-prompts                       (Gemini, 0.06k, Apache-2.0)
 
 set -e
 
@@ -72,7 +74,9 @@ for rec in records:
         continue
 
     if image_dir:
-        img_url = f"{base_img_url}/{image_dir}"
+        # [FIX 2026-06-03] repo stores images under images/<case>/output.jpg,
+        # upstream schema only gives the case dir name.
+        img_url = f"{base_img_url}/{image_dir}/output.jpg"
     else:
         img_url = ''
 
@@ -201,6 +205,150 @@ PYEOF
 )
 echo "$GPT_COUNT"
 
+# ---- [4.5/6] YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill (Gemini) ----
+# NOTE 2026-06-03: 这个 repo 是个 AI agent skill, 数据实际在 youmind.com 后端,
+# GitHub manifest.json 只有 slug+count, 没有 dataFile. 拉取会失败, 脚本会优雅跳过.
+# 如果未来 YouMind 公开 JSON 数据, 把本块重新激活.
+echo ""
+echo "[4.5/6] Parsing YouMind (Nano Banana Pro, Gemini)..."
+YOMIND_COUNT=$(python3 << 'PYEOF'
+import json, urllib.request
+
+manifest_url = 'https://raw.githubusercontent.com/YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill/main/references/manifest.json'
+try:
+    with urllib.request.urlopen(manifest_url, timeout=15) as r:
+        manifest = json.loads(r.read())
+except Exception as e:
+    print(f"YouMind manifest fetch failed: {e}", file=__import__('sys').stderr)
+    manifest = {'categories': []}
+
+# 校验: manifest 必须有 dataFile 指向真实数据
+cats = manifest.get('categories', [])
+real_cats = [c for c in cats if c.get('dataFile')]
+if not real_cats:
+    print("YouMind: manifest has no dataFile (backend-only repo), skipping", file=__import__('sys').stderr)
+    json.dump([], open('/tmp/yomind_prompts.json', 'w'))
+    print("YouMind: 0 items", file=__import__('sys').stderr)
+    raise SystemExit(0)
+
+yomind_cat_map = {
+    'profile-avatar': 'portrait',
+    'social-media-post': 'ad',
+    'infographic-edu-visual': 'comparison',
+    'youtube-thumbnail': 'ad',
+    'comic-storyboard': 'character',
+    'product-marketing': 'ad',
+    'ecommerce-main-image': 'ecommerce',
+    'game-asset': 'character',
+    'poster-flyer': 'poster',
+    'app-web-design': 'ui',
+    'others': 'ad',
+}
+
+results = []
+for cat in real_cats:
+    slug = cat.get('slug', '')
+    local_cat = yomind_cat_map.get(slug, 'ad')
+    data_url = f"https://raw.githubusercontent.com/YouMind-OpenLab/nano-banana-pro-prompts-recommend-skill/main/{cat['dataFile']}"
+    try:
+        with urllib.request.urlopen(data_url, timeout=30) as r:
+            items = json.loads(r.read())
+    except Exception as e:
+        print(f"  skip {slug}: {e}", file=__import__('sys').stderr)
+        continue
+    for it in items:
+        title = it.get('title', '')
+        if not title:
+            continue
+        media = it.get('sourceMedia', []) or []
+        img_url = ''
+        if media and isinstance(media, list):
+            m0 = media[0]
+            img_url = m0.get('url', '') if isinstance(m0, dict) else (m0 if isinstance(m0, str) else '')
+        results.append({
+            'img': img_url, 'link': '', 'author': '',
+            'prompt': it.get('content', '') or it.get('description', ''),
+            'title': title, 'category': local_cat,
+            '_date': cat.get('updatedAt', '2024-01-01')[:10],
+            '_source': 'YouMind-OpenLab',
+        })
+
+json.dump(results, open('/tmp/yomind_prompts.json', 'w'), indent=2)
+print(f"YouMind: {len(results)} items", file=__import__('sys').stderr)
+PYEOF
+)
+echo "$YOMIND_COUNT"
+
+# ---- [4.6/6] cuigh/awesome-nano-banana-prompts (Apache-2.0, Gemini) ----
+# 实际格式: `### Case 61: [Title](source_url) (by [@author](author_url))` 后跟 markdown 区段
+echo ""
+echo "[4.6/6] Parsing cuigh (Nano Banana, Apache-2.0)..."
+CUIGH_COUNT=$(python3 << 'PYEOF'
+import json, urllib.request, re
+
+readme_url = 'https://raw.githubusercontent.com/cuigh/awesome-nano-banana-prompts/main/README.md'
+try:
+    with urllib.request.urlopen(readme_url, timeout=20) as r:
+        md = r.read().decode('utf-8', errors='ignore')
+except Exception as e:
+    print(f"cuigh fetch failed: {e}", file=__import__('sys').stderr)
+    md = ''
+
+case_re = re.compile(r'^#{2,5}\s*Case\s+(\d+):\s*\[([^\]]+)\]\(([^)]+)\)\s*(?:\(by\s*\[([^\]]+)\]\([^)]+\)\))?', re.IGNORECASE | re.MULTILINE)
+prompt_re = re.compile(r'```[a-zA-Z]*\s*\n([\s\S]+?)\n```', re.MULTILINE)
+img_re = re.compile(r'!\[[^\]]*\]\((https?://[^\)]+)\)')
+
+# 标题/正文分类关键词
+kw_cat = [
+    ('character', ['character', 'mascot', 'creature', '角色', '吉祥物']),
+    ('portrait', ['portrait', 'headshot', 'selfie', '人像', '肖像', '自拍', 'face']),
+    ('poster', ['poster', 'flyer', 'banner', '海报', 'thumbnail', 'cover']),
+    ('ui', ['ui', 'app interface', 'web design', 'dashboard', '界面']),
+    ('landscape', ['landscape', 'scenery', 'mountain', '风景', 'vista']),
+    ('comparison', ['comparison', 'before & after', 'before/after', '对比']),
+    ('ecommerce', ['product', 'ecommerce', '商品', '电商', 'merchandise']),
+]
+
+def infer_cat(title, prompt):
+    t = (title + ' ' + (prompt or '')).lower()
+    for c, kws in kw_cat:
+        for k in kws:
+            if k in t:
+                return c
+    return 'ad'
+
+results = []
+matches = list(case_re.finditer(md))
+for i, m in enumerate(matches):
+    case_no = m.group(1)
+    title = m.group(2).strip()
+    source_url = m.group(3).strip()
+    author = (m.group(4) or '').strip()
+    start = m.end()
+    end = matches[i + 1].start() if i + 1 < len(matches) else len(md)
+    block = md[start:end]
+    pm = prompt_re.search(block)
+    prompt_text = pm.group(1).strip() if pm else ''
+    im = img_re.search(block)
+    img_url = im.group(1) if im else ''
+
+    results.append({
+        'img': img_url,
+        'link': source_url,
+        'author': author,
+        'prompt': prompt_text,
+        'title': title,
+        'category': infer_cat(title, prompt_text),
+        '_date': '2025-12-04',
+        '_source': 'cuigh',
+    })
+
+json.dump(results, open('/tmp/cuigh_prompts.json', 'w'), indent=2)
+print(f"cuigh: {len(results)} items", file=__import__('sys').stderr)
+PYEOF
+)
+echo "$CUIGH_COUNT"
+
 # Merge
 echo ""
 echo "[5/6] Merging with existing prompts..."
@@ -225,50 +373,65 @@ with open('/tmp/fly_prompts.json') as f:
     fly_new = json.load(f)
 with open('/tmp/gpt_prompts.json') as f:
     gpt_new = json.load(f)
+try:
+    with open('/tmp/yomind_prompts.json') as f:
+        yomind_new = json.load(f)
+except FileNotFoundError:
+    yomind_new = []
+try:
+    with open('/tmp/cuigh_prompts.json') as f:
+        cuigh_new = json.load(f)
+except FileNotFoundError:
+    cuigh_new = []
 
 print(f"EvoLinkAI new: {len(evo_new)}", file=__import__('sys').stderr)
 print(f"freestylefly new: {len(fly_new)}", file=__import__('sys').stderr)
 print(f"gpt-image2 new: {len(gpt_new)}", file=__import__('sys').stderr)
+print(f"YouMind new: {len(yomind_new)}", file=__import__('sys').stderr)
+print(f"cuigh new: {len(cuigh_new)}", file=__import__('sys').stderr)
 
-# Dedupe by link
+# Dedupe by link (YouMind/cuigh have no link, treat as unique)
 existing_links = {p['link'] for p in existing if p.get('link')}
+existing_keys = {(p.get('title',''), p.get('img','')) for p in existing}
 
 merged = list(existing)
-for p in evo_new + fly_new + gpt_new:
-    if p['link'] not in existing_links:
+for batch in (yomind_new, gpt_new, evo_new, fly_new, cuigh_new):
+    for p in batch:
+        # Dedupe: prefer link, fallback to (title, img)
+        key = (p.get('title',''), p.get('img',''))
+        if p.get('link') and p['link'] in existing_links:
+            continue
+        if not p.get('link') and key in existing_keys:
+            continue
         merged.append(p)
-        existing_links.add(p['link'])
+        if p.get('link'):
+            existing_links.add(p['link'])
+        existing_keys.add(key)
 
-# Sort by source priority first (gpt-image2 first), then by date descending
-# Source priority: gpt-image2 > EvoLinkAI > freestylefly > existing
-def get_sort_key(p):
-    date = p.get('_date', '2000-01-01')
-    source = p.get('_source', 'zzz')
-    # gpt-image2 should be first (lowest priority value), sort date descending
-    source_priority = {'gpt-image2': 0, 'EvoLinkAI': 1, 'freestylefly': 2}.get(source, 9)
-    return (source_priority, -ord(date[0]) if date else 0)  # Simple trick: for descending, we invert
-
-# For proper descending date within same source:
-# Convert date to tuple for secondary sort
+# Sort: by source priority (newer/more-relevant first), then by date desc
+# Priority: YouMind > gpt-image2 > EvoLinkAI > cuigh > freestylefly > existing
 def get_sort_key(p):
     date_str = p.get('_date', '2000-01-01')
     source = p.get('_source', 'zzz')
-    source_priority = {'gpt-image2': 0, 'EvoLinkAI': 1, 'freestylefly': 2}.get(source, 9)
-    # Parse date for proper sorting
+    source_priority = {
+        'YouMind-OpenLab': 0,
+        'gpt-image2': 1,
+        'EvoLinkAI': 2,
+        'cuigh': 3,
+        'freestylefly': 4,
+    }.get(source, 9)
     try:
-        year, month, day = date_str.split('-')
-        date_tuple = (-int(year), -int(month), -int(day))
-    except:
+        y, m, d = date_str.split('-')
+        date_tuple = (-int(y), -int(m), -int(d))
+    except Exception:
         date_tuple = (0, 0, 0)
     return (source_priority, date_tuple)
 
 merged.sort(key=get_sort_key)
 
-# Remove internal fields
+# Remove internal _date; keep _source for attribution
 for p in merged:
     p.pop('_date', None)
-    # Keep _source for now so we can track origin
-    # p.pop('_source', None)
 
 print(f"Merged total: {len(merged)}", file=__import__('sys').stderr)
 
@@ -279,17 +442,33 @@ print("Saved to src/data/prompts.json", file=__import__('sys').stderr)
 PYEOF
 
 # Cleanup
-rm -rf /tmp/evo_prompts.json /tmp/fly_prompts.json /tmp/gpt_prompts.json /tmp/rubin-sync
+rm -rf /tmp/evo_prompts.json /tmp/fly_prompts.json /tmp/gpt_prompts.json \
+       /tmp/yomind_prompts.json /tmp/cuigh_prompts.json /tmp/rubin-sync
 
 echo ""
-echo "[6/6] Done!"
+echo "[6/6] Tagging + image fix..."
+cd "$SCRIPT_DIR"
+python3 scripts/fix_evo_images.py 2>&1 | tail -5
+python3 scripts/remap_evo_category.py 2>&1 | tail -10
+python3 scripts/tag_prompts.py 2>&1 | tail -5
+
+echo ""
+echo "[7/7] Done!"
 echo ""
 echo "Changes summary:"
 python3 -c "
 import json
+from collections import Counter
 with open('src/data/prompts.json') as f:
     d = json.load(f)
 print(f'  Total prompts: {len(d)}')
+cats = Counter(p.get('category','') for p in d)
+for k,v in cats.most_common():
+    print(f'    {k:15s} {v}')
+srcs = Counter(p.get('_source','') for p in d)
+print(f'  Sources:')
+for k,v in srcs.most_common():
+    print(f'    {k:20s} {v}')
 "
 
 echo ""

@@ -11,6 +11,8 @@ const prompts = promptsData as Array<{
   prompt: string;
   title: string;
   category: string;
+  tags: string[];
+  model: string;
 }>;
 
 const categories = [
@@ -35,6 +37,25 @@ const categoryNames: Record<string, string> = {
   ui: '界面设计',
   landscape: '风景建筑',
 };
+
+// 模型筛选（5 个，对齐 opennana）
+const modelFilters = [
+  { key: 'all', label: '全部' },
+  { key: 'ChatGPT', label: 'ChatGPT' },
+  { key: 'Nano Banana Pro', label: 'Nano Banana Pro' },
+  { key: 'Nano Banana 2', label: 'Nano Banana 2' },
+  { key: 'Grok', label: 'Grok' },
+];
+
+// 标签筛选（从 prompts 实际数据中聚合，最多 16 个）
+const TAG_FREQ_MIN = 30; // 出现 ≥30 次的 tag 才进 chips
+const tagCount: Record<string, number> = {};
+for (const p of prompts) for (const t of (p.tags || [])) tagCount[t] = (tagCount[t] || 0) + 1;
+const tagChips = Object.entries(tagCount)
+  .filter(([, n]) => n >= TAG_FREQ_MIN)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 16)
+  .map(([k]) => k);
 
 const totalPages = Math.ceil(prompts.length / PAGE_SIZE);
 const initialPrompts = prompts.slice(0, PAGE_SIZE);
@@ -93,6 +114,39 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
           </button>
         ))}
       </div>
+
+      <!-- Model filters -->
+      <div class="flex flex-wrap justify-center gap-2 mt-3" id="model-tabs">
+        <span class="text-[10px] tracking-widest uppercase self-center" style="color: rgba(197,165,114,0.6);">模型</span>
+        {modelFilters.map((m, i) => (
+          <button
+            data-model={m.key}
+            class="px-3 py-1 text-[10px] tracking-wider rounded-full transition-all duration-300 border"
+            style={i === 0
+              ? 'background: rgba(197,165,114,0.2); color: #f5e6c8; border-color: rgba(197,165,114,0.6);'
+              : 'border-color: rgba(197,165,114,0.25); color: rgba(197,165,114,0.6);'}
+          >{m.label}</button>
+        ))}
+      </div>
+
+      <!-- Tag chips (horizontal scroll, "expand" toggle) -->
+      {tagChips.length > 0 && (
+        <div class="mt-3 px-2">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-[10px] tracking-widest uppercase" style="color: rgba(197,165,114,0.6);">标签</span>
+            <button id="tag-toggle" class="text-[10px] tracking-wider" style="color: rgba(0,212,154,0.6);">展开 ▼</button>
+          </div>
+          <div id="tag-chips" class="flex flex-nowrap overflow-x-auto gap-2 pb-1" style="-webkit-overflow-scrolling: touch;">
+            {tagChips.map((t) => (
+              <button
+                data-tag={t}
+                class="tag-chip flex-shrink-0 px-3 py-1 text-[10px] tracking-wider rounded-full border transition-all duration-300"
+                style="border-color: rgba(0,212,154,0.2); color: rgba(200,230,215,0.6); background: transparent;"
+              >{t}</button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </section>
 
@@ -105,17 +159,25 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
           data-category={p.category}
           data-title={p.title.toLowerCase()}
           data-idx={idx}
+          data-model={p.model || ''}
+          data-tags={(p.tags || []).join(',')}
           style="background: #0a1f12;"
         >
           <!-- Image (click to lightbox) -->
-          <div class="overflow-hidden relative cursor-pointer" onclick={`openLightbox('${p.img}', '${p.title.replace(/'/g, "\\'")}')`}>
-            <img
-              src={p.img}
-              alt={p.title}
-              class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
-              loading="lazy"
-              style="max-height: 280px;"
-            />
+          <div class="overflow-hidden relative cursor-pointer" data-action="lightbox">
+            {p.img ? (
+              <img
+                src={p.img}
+                alt={p.title}
+                class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
+                loading="lazy"
+                style="max-height: 280px;"
+              />
+            ) : (
+              <div class="w-full h-40 flex items-center justify-center" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.4);">
+                <span class="text-xs">无图片</span>
+              </div>
+            )}
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <span class="text-white text-xs tracking-widest" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">点击放大</span>
             </div>
@@ -123,9 +185,16 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 
           <div class="p-5">
             <div class="flex items-center justify-between mb-3">
-              <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
-                {categoryNames[p.category] || p.category}
-              </span>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
+                  {categoryNames[p.category] || p.category}
+                </span>
+                {p.model && (
+                  <span class="text-[10px] tracking-wider px-2 py-0.5 rounded-full" style="color: rgba(197,165,114,0.8); background: rgba(197,165,114,0.1);">
+                    {p.model}
+                  </span>
+                )}
+              </div>
               {p.author && (
                 <span class="text-[10px] tracking-wider" style="color: rgba(200,230,215,0.5);">
                   {p.author}
@@ -137,22 +206,28 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
               {p.title}
             </h3>
 
+            <!-- Tag chips on card -->
+            {p.tags && p.tags.length > 0 && (
+              <div class="flex flex-wrap gap-1 mb-3">
+                {p.tags.slice(0, 3).map((t) => (
+                  <span class="text-[10px] px-2 py-0.5 rounded-full" style="color: rgba(200,230,215,0.5); background: rgba(0,212,154,0.08);">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+
             <!-- Prompt preview -->
             <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
-              <p class="line-clamp-3">{p.prompt}</p>
+              <p class="line-clamp-3">{p.prompt || '（无提示词文本）'}</p>
             </div>
 
             <!-- Actions -->
             <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
-              <button
-                onclick={`event.stopPropagation(); copyPromptText(${idx})`}
-                data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
-                class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300"
-                style="border-color: rgba(0,212,154,0.25); color: var(--accent);"
-              >
+              <button data-action="copy" class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300" style="border-color: rgba(0,212,154,0.25); color: var(--accent);">
                 <span>📋</span> 复制
               </button>
-              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">
+              <button data-action="toggle" class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">
                 点击展开完整提示词 ↓
               </button>
             </div>
@@ -163,19 +238,14 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
             <div class="mb-3">
               <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
               <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
-                <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt}</pre>
+                <pre class="whitespace-pre-wrap text-xs leading-relaxed">{p.prompt || '（无提示词文本）'}</pre>
               </div>
             </div>
             <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
-              <button
-                onclick={`event.stopPropagation(); copyPromptText(${idx})`}
-                data-prompt={p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}
-                class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
-                style="background: var(--accent); color: #071209;"
-              >
+              <button data-action="copy" class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300" style="background: var(--accent); color: #071209;">
                 <span>✓</span> 复制提示词
               </button>
-              <button onclick={`togglePrompt(${idx})`} class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
+              <button data-action="toggle" class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
                 收起
               </button>
             </div>
@@ -252,6 +322,9 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 <script define:vars={{ initialPrompts, PAGE_SIZE, totalPages }}>
 {
   const tabs = document.querySelectorAll('#category-tabs button');
+  const modelTabs = document.querySelectorAll('#model-tabs button');
+  const tagChipsEl = document.getElementById('tag-chips');
+  const tagToggleBtn = document.getElementById('tag-toggle');
   const grid = document.getElementById('prompts-grid');
   const searchInput = document.getElementById('search-input');
   const emptyState = document.getElementById('empty-state');
@@ -264,6 +337,8 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
 
   let currentPage = 1;
   let currentCategory = 'all';
+  let currentModel = 'all';
+  let currentTag = '';
   let currentSearch = '';
   let allPrompts = null; // Lazy load
 
@@ -273,26 +348,111 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
     ui: '界面设计', landscape: '风景建筑',
   };
 
-  // Lightbox
-  window.openLightbox = function(imgSrc, title) {
+  // ---------- Lightbox ----------
+  function openLightbox(imgSrc, title) {
+    if (!imgSrc) return;
     lightboxImg.src = imgSrc;
-    lightboxImg.alt = title;
+    lightboxImg.alt = title || '';
     lightbox.classList.remove('hidden');
     lightbox.classList.add('flex');
     document.body.style.overflow = 'hidden';
-  };
-
-  window.closeLightbox = function() {
+  }
+  function closeLightbox() {
     lightbox.classList.add('hidden');
     lightbox.classList.remove('flex');
     document.body.style.overflow = '';
-  };
-
+  }
   lightboxClose?.addEventListener('click', closeLightbox);
   lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-  // Load all prompts on demand
+  // ---------- Tag chip "展开/收起" ----------
+  if (tagChipsEl && tagToggleBtn) {
+    let expanded = false;
+    tagToggleBtn.addEventListener('click', () => {
+      expanded = !expanded;
+      tagChipsEl.style.flexWrap = expanded ? 'wrap' : 'nowrap';
+      tagChipsEl.style.overflowX = expanded ? 'visible' : 'auto';
+      tagToggleBtn.textContent = expanded ? '收起 ▲' : '展开 ▼';
+    });
+  }
+
+  // ---------- 复制（不再依赖 inline 转义） ----------
+  function copyText(text, btn) {
+    if (!text) return;
+    const finish = (ok) => {
+      const original = btn.innerHTML;
+      btn.innerHTML = ok
+        ? '<span>✓</span> 已复制'
+        : '<span>⚠</span> 复制失败';
+      btn.disabled = true;
+      setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 1500);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => finish(true)).catch(() => {
+        fallbackCopy(text) ? finish(true) : finish(false);
+      });
+    } else {
+      fallbackCopy(text) ? finish(true) : finish(false);
+    }
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  // ---------- Event delegation (核心修复) ----------
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.prompt-card');
+    if (!card) return;
+    const action = e.target.closest('[data-action]')?.dataset.action;
+    const idx = parseInt(card.dataset.idx, 10);
+    if (action === 'copy') {
+      e.stopPropagation();
+      const btn = e.target.closest('[data-action="copy"]');
+      // 从 allPrompts 找；找不到就 fallback 到 initialPrompts
+      const promptsArr = allPrompts || initialPrompts;
+      const p = promptsArr[idx];
+      if (p) copyText(p.prompt || '', btn);
+      return;
+    }
+    if (action === 'toggle') {
+      e.stopPropagation();
+      togglePrompt(idx);
+      return;
+    }
+    if (action === 'lightbox' || e.target.closest('[data-action="lightbox"]')) {
+      const promptsArr = allPrompts || initialPrompts;
+      const p = promptsArr[idx];
+      if (p && p.img) openLightbox(p.img, p.title);
+    }
+  });
+
+  // ---------- Toggle prompt ----------
+  function togglePrompt(idx) {
+    const card = grid.querySelector(`[data-idx="${idx}"]`);
+    if (!card) return;
+    const preview = card.querySelector('.prompt-preview');
+    const full = card.querySelector('.prompt-full');
+    const toggleBtns = card.querySelectorAll('.prompt-toggle');
+    if (full?.classList.contains('hidden')) {
+      full.classList.remove('hidden');
+      preview?.classList.add('hidden');
+      toggleBtns.forEach(b => { b.textContent = '收起'; b.style.color = 'rgba(197,165,114,0.7)'; });
+    } else {
+      full?.classList.add('hidden');
+      preview?.classList.remove('hidden');
+      toggleBtns.forEach(b => b.textContent = '点击展开完整提示词 ↓');
+    }
+  }
+
+  // ---------- Load + filter ----------
   async function loadAllPrompts() {
     if (allPrompts) return allPrompts;
     try {
@@ -305,17 +465,26 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
     return allPrompts;
   }
 
-  // Get filtered prompts
   async function getFilteredPrompts() {
     const prompts = await loadAllPrompts();
     return prompts.filter(p => {
       const matchCat = currentCategory === 'all' || p.category === currentCategory;
-      const matchSearch = currentSearch === '' || p.title.toLowerCase().includes(currentSearch);
-      return matchCat && matchSearch;
+      const matchModel = currentModel === 'all' || (p.model || '') === currentModel;
+      const matchTag = !currentTag || (p.tags || []).includes(currentTag);
+      const matchSearch = currentSearch === '' ||
+        (p.title || '').toLowerCase().includes(currentSearch) ||
+        (p.prompt || '').toLowerCase().includes(currentSearch);
+      return matchCat && matchModel && matchTag && matchSearch;
     });
   }
 
-  // Render page
+  function escHtml(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  // ---------- Render ----------
   async function renderPage(page) {
     const prompts = await getFilteredPrompts();
     const totalFilteredPages = Math.ceil(prompts.length / PAGE_SIZE);
@@ -326,63 +495,72 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
     const start = (page - 1) * PAGE_SIZE;
     const pageItems = prompts.slice(start, start + PAGE_SIZE);
 
-    grid.innerHTML = pageItems.map((p, i) => `
+    grid.innerHTML = pageItems.map((p, i) => {
+      const idx = start + i;
+      const tags = (p.tags || []).slice(0, 3);
+      const tagBadges = tags.map(t =>
+        `<span class="text-[10px] px-2 py-0.5 rounded-full" style="color: rgba(200,230,215,0.5); background: rgba(0,212,154,0.08);">${escHtml(t)}</span>`
+      ).join('');
+      const imgBlock = p.img
+        ? `<img src="${escHtml(p.img)}" alt="${escHtml(p.title)}" class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105" loading="lazy" style="max-height: 280px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+           <div class="w-full h-40 items-center justify-center hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.4);">
+             <span class="text-xs">图片加载失败</span>
+           </div>`
+        : `<div class="w-full h-40 flex items-center justify-center" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.4);"><span class="text-xs">无图片</span></div>`;
+      return `
       <div class="prompt-card overflow-hidden transition-all duration-400"
-           data-category="${p.category}" data-title="${p.title.toLowerCase()}" data-idx="${start + i}"
+           data-category="${escHtml(p.category)}"
+           data-title="${escHtml((p.title || '').toLowerCase())}"
+           data-idx="${idx}"
+           data-model="${escHtml(p.model || '')}"
+           data-tags="${escHtml((p.tags || []).join(','))}"
            style="background: #0a1f12;">
-        <div class="overflow-hidden relative cursor-pointer" onclick="openLightbox('${p.img.replace(/'/g, "\\'")}', '${p.title.replace(/'/g, "\\'")}')">
-          <img src="${p.img}" alt="${p.title}" class="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
-               loading="lazy" style="max-height: 280px;" />
+        <div class="overflow-hidden relative cursor-pointer" data-action="lightbox">
+          ${imgBlock}
           <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <span class="text-white text-xs tracking-widest" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8);">点击放大</span>
           </div>
         </div>
         <div class="p-5">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
-              ${categoryNames[p.category] || p.category}
-            </span>
-            ${p.author ? `<span class="text-[10px] tracking-wider" style="color: rgba(200,230,215,0.5);">${p.author}</span>` : ''}
+          <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full border" style="color: var(--accent); border-color: rgba(0,212,154,0.25);">
+                ${escHtml(categoryNames[p.category] || p.category || '其他')}
+              </span>
+              ${p.model ? `<span class="text-[10px] tracking-wider px-2 py-0.5 rounded-full" style="color: rgba(197,165,114,0.8); background: rgba(197,165,114,0.1);">${escHtml(p.model)}</span>` : ''}
+            </div>
+            ${p.author ? `<span class="text-[10px] tracking-wider" style="color: rgba(200,230,215,0.5);">${escHtml(p.author)}</span>` : ''}
           </div>
           <h3 class="text-lg font-light tracking-wide mb-3" style="color: var(--text-primary); font-family: 'Cormorant Garamond', serif;">
-            ${p.title}
+            ${escHtml(p.title)}
           </h3>
+          ${tagBadges ? `<div class="flex flex-wrap gap-1 mb-3">${tagBadges}</div>` : ''}
           <div class="prompt-preview text-xs p-3 rounded-lg mb-4 overflow-hidden" style="background: rgba(0,0,0,0.3); color: rgba(200,230,215,0.5);">
-            <p class="line-clamp-3">${p.prompt}</p>
+            <p class="line-clamp-3">${escHtml(p.prompt || '（无提示词文本）')}</p>
           </div>
           <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
-            <button onclick="event.stopPropagation(); copyPromptText(${start + i})"
-                    data-prompt="${p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}"
-                    class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300"
-                    style="border-color: rgba(0,212,154,0.25); color: var(--accent);">
+            <button data-action="copy" class="text-xs tracking-wider uppercase flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-300" style="border-color: rgba(0,212,154,0.25); color: var(--accent);">
               <span>📋</span> 复制
             </button>
-            <button onclick="togglePrompt(${start + i})" class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">
-              点击展开完整提示词 ↓
-            </button>
+            <button data-action="toggle" class="prompt-toggle text-xs" style="color: rgba(197,165,114,0.7);">点击展开完整提示词 ↓</button>
           </div>
         </div>
         <div class="prompt-full hidden px-5 pb-5">
           <div class="mb-3">
             <p class="text-[10px] tracking-widest uppercase mb-2" style="color: var(--accent);">提示词原文</p>
             <div class="text-xs p-4 rounded-lg overflow-auto" style="background: rgba(0,0,0,0.4); color: var(--text-primary); max-height: 300px;">
-              <pre class="whitespace-pre-wrap text-xs leading-relaxed">${p.prompt}</pre>
+              <pre class="whitespace-pre-wrap text-xs leading-relaxed">${escHtml(p.prompt || '（无提示词文本）')}</pre>
             </div>
           </div>
           <div class="flex items-center justify-between pt-3 border-t" style="border-color: rgba(0,212,154,0.2);">
-            <button onclick="event.stopPropagation(); copyPromptText(${start + i})"
-                    data-prompt="${p.prompt.replace(/`/g, '\\`').replace(/\$/g, '\\$')}"
-                    class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300"
-                    style="background: var(--accent); color: #071209;">
+            <button data-action="copy" class="text-xs tracking-wider uppercase flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300" style="background: var(--accent); color: #071209;">
               <span>✓</span> 复制提示词
             </button>
-            <button onclick="togglePrompt(${start + i})" class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">
-              收起
-            </button>
+            <button data-action="toggle" class="prompt-toggle text-xs px-3 py-1.5 rounded-full border" style="border-color: rgba(0,212,154,0.25); color: rgba(197,165,114,0.7);">收起</button>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
 
     const totalFiltered = Math.ceil(prompts.length / PAGE_SIZE);
     pageInfo.textContent = `${page} / ${totalFiltered || 1}`;
@@ -391,11 +569,11 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
     emptyState?.classList.toggle('hidden', prompts.length > 0);
   }
 
-  // Pagination
+  // ---------- Pagination ----------
   prevBtn?.addEventListener('click', () => renderPage(currentPage - 1));
   nextBtn?.addEventListener('click', () => renderPage(currentPage + 1));
 
-  // Category filter
+  // ---------- Category filter ----------
   tabs.forEach(tab => {
     tab.addEventListener('click', async () => {
       currentCategory = tab.dataset.category;
@@ -412,41 +590,54 @@ const initialPrompts = prompts.slice(0, PAGE_SIZE);
     });
   });
 
-  // Search
+  // ---------- Model filter ----------
+  modelTabs.forEach(tab => {
+    tab.addEventListener('click', async () => {
+      currentModel = tab.dataset.model;
+      modelTabs.forEach(t => {
+        t.style.background = 'transparent';
+        t.style.color = 'rgba(197,165,114,0.6)';
+        t.style.borderColor = 'rgba(197,165,114,0.25)';
+      });
+      tab.style.background = 'rgba(197,165,114,0.2)';
+      tab.style.color = '#f5e6c8';
+      tab.style.borderColor = 'rgba(197,165,114,0.6)';
+      await loadAllPrompts();
+      renderPage(1);
+    });
+  });
+
+  // ---------- Tag filter (event delegation) ----------
+  tagChipsEl?.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-tag]');
+    if (!btn) return;
+    const tag = btn.dataset.tag;
+    // toggle: 再点同一个取消
+    if (currentTag === tag) {
+      currentTag = '';
+      btn.style.background = 'transparent';
+      btn.style.color = 'rgba(200,230,215,0.6)';
+      btn.style.borderColor = 'rgba(0,212,154,0.2)';
+    } else {
+      currentTag = tag;
+      tagChipsEl.querySelectorAll('[data-tag]').forEach(b => {
+        b.style.background = 'transparent';
+        b.style.color = 'rgba(200,230,215,0.6)';
+        b.style.borderColor = 'rgba(0,212,154,0.2)';
+      });
+      btn.style.background = 'rgba(0,212,154,0.2)';
+      btn.style.color = '#aaf0d0';
+      btn.style.borderColor = 'rgba(0,212,154,0.6)';
+    }
+    await loadAllPrompts();
+    renderPage(1);
+  });
+
+  // ---------- Search ----------
   searchInput?.addEventListener('input', async (e) => {
     currentSearch = e.target.value.toLowerCase();
     await loadAllPrompts();
     renderPage(1);
   });
-
-  // Toggle prompt
-  window.togglePrompt = function(idx) {
-    const card = grid.querySelector(`[data-idx="${idx}"]`);
-    if (!card) return;
-    const preview = card.querySelector('.prompt-preview');
-    const full = card.querySelector('.prompt-full');
-    const toggleBtns = card.querySelectorAll('.prompt-toggle');
-    if (full?.classList.contains('hidden')) {
-      full.classList.remove('hidden');
-      preview?.classList.add('hidden');
-      toggleBtns.forEach(b => { b.textContent = '收起'; b.style.color = 'rgba(197,165,114,0.7)'; });
-    } else {
-      full?.classList.add('hidden');
-      preview?.classList.remove('hidden');
-      toggleBtns.forEach(b => b.textContent = '点击展开完整提示词 ↓');
-    }
-  };
-
-  // Copy prompt
-  window.copyPromptText = function(idx) {
-    const btn = event.target.closest('button');
-    if (!btn) return;
-    const promptData = btn.dataset.prompt;
-    navigator.clipboard.writeText(promptData).then(() => {
-      const original = btn.innerHTML;
-      btn.innerHTML = '<span>✓</span> 已复制';
-      setTimeout(() => { btn.innerHTML = original; }, 1500);
-    });
-  };
 }
 </script>

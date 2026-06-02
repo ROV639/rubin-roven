@@ -1,0 +1,102 @@
+{
+  "_meta": {
+    "source": "opennana.com prompt gallery (captured 2026-06-03, one-time)",
+    "license": "no upstream LICENSE; reused for keyword matching only, not data replication",
+    "max_tags_per_prompt": 5
+  },
+  "电影感": [
+    "cinematic", "cinematic lighting", "cinematic portrait",
+    "film grain", "film still", "film noir", "anamorphic",
+    "movie scene", "moody lighting", "dramatic lighting",
+    "atmosphere", "atmospheric", "色彩", "氛围", "电影"
+  ],
+  "超写实": [
+    "hyperrealistic", "hyper-realistic", "ultra realistic", "ultra-realistic",
+    "photorealistic", "photo realistic", "8k", "8k uhd",
+    "raw photo", "dslr", "highly detailed", "sharp focus",
+    "超写实", "写实摄影"
+  ],
+  "photography": [
+    "photography", "photograph", "portrait photography",
+    "studio photography", "lifestyle photography",
+    "editorial photography", "85mm", "50mm", "35mm",
+    "professional photography"
+  ],
+  "写实": [
+    "realistic", "lifelike", "true to life", "natural look",
+    "写实", "真实感", "真实"
+  ],
+  "portrait": [
+    "portrait", "headshot", "close-up face", "close up of face",
+    "upper body", "facial expression", "portrait of",
+    "人像", "肖像", "半身", "特写"
+  ],
+  "人像": [
+    "person", "woman", "man", "girl", "boy", "people",
+    "model", "lady", "gentleman", "人物", "女性", "男性",
+    "女孩", "男孩", "男人", "女人"
+  ],
+  "landscape": [
+    "landscape", "scenery", "cityscape", "skyline",
+    "mountain", "forest", "ocean", "sunset", "sunrise",
+    "wide shot", "vista", "风景", "山河", "自然", "城市景观"
+  ],
+  "时尚": [
+    "fashion", "couture", "haute couture", "editorial fashion",
+    "vogue", "runway", "lookbook", "outfit", "street style",
+    "时尚", "穿搭", "街拍"
+  ],
+  "自拍": [
+    "selfie", "self portrait", "phone camera", "casual selfie",
+    "i took this photo", "自拍", "随手拍"
+  ],
+  "vehicle": [
+    "car", "vehicle", "sports car", "supercar", "luxury car",
+    "ferrari", "porsche", "lamborghini", "tesla", "bmw", "mercedes",
+    "racing", "race car", "motorcycle", "汽车", "跑车", "赛车", "摩托车"
+  ],
+  "高级感": [
+    "luxury", "premium", "elegant", "high-end", "refined",
+    "sophisticated", "exclusive", "奢华", "高级", "优雅"
+  ],
+  "3D": [
+    "3d render", "3d rendering", "3d model", "3d illustration",
+    "blender", "octane render", "unreal engine", "cinema 4d",
+    "isometric 3d", "三维", "建模", "3d渲染", "立体"
+  ],
+  "动漫": [
+    "anime", "manga", "anime style", "anime-inspired",
+    "cel shading", "kawaii", "二次元", "动漫", "插画风"
+  ],
+  "信息图": [
+    "infographic", "chart", "diagram", "data visualization",
+    "comparison chart", "flowchart", "信息图", "图表", "对比图"
+  ],
+  "电商": [
+    "product shot", "product photography", "ecommerce",
+    "white background", "studio product", "amazon listing",
+    "商品图", "电商", "白底图", "产品摄影"
+  ],
+  "界面": [
+    "ui", "ux", "app interface", "dashboard", "web design",
+    "wireframe", "mobile app", "界面", "后台", "app截图"
+  ],
+  "海报": [
+    "poster", "poster design", "typography poster",
+    "advertising poster", "banner", "flyer",
+    "广告海报", "海报", "banner"
+  ],
+  "角色": [
+    "character design", "character illustration",
+    "mascot", "creature design", "concept art",
+    "角色设计", "吉祥物", "概念设计"
+  ],
+  "美妆": [
+    "makeup", "cosmetics", "beauty", "skincare",
+    "美妆", "化妆", "护肤品", "彩妆"
+  ],
+  "美食": [
+    "food", "food photography", "cuisine", "dish",
+    "restaurant", "美食", "菜品", "菜谱"
+  ]
+}
