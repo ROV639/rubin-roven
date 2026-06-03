@@ -1,2 +1,94 @@
-/bin/sh: ./sync_upstream.sh: No such file or directory
-/bin/sh: ./sync_upstream.sh: No such file or directory
+=== Rubin Roven Prompt Sync ===
+Started: Wed Jun  3 10:47:03 UTC 2026
+
+[1/6] Cloning EvoLinkAI/awesome-gpt-image-2-prompts...
+
+[2/6] Cloning freestylefly/awesome-gpt-image-2...
+
+[3/6] Downloading gpt-image2/awesome-gptimage2-prompts (raw JSON)...
+Downloaded: 23711435 bytes
+
+[4/6] Parsing upstream data...
+EvoLinkAI: 530 records
+
+freestylefly: 485 cases
+
+gpt-image2: 2717 items
+
+
+[4.5/6] Parsing YouMind (Nano Banana Pro, Gemini)...
+YouMind: manifest has no dataFile (backend-only repo), skipping
+YouMind: 0 items
+
+
+[4.6/6] Parsing cuigh (Nano Banana, Apache-2.0)...
+cuigh: 61 items
+
+
+[5/6] Merging with existing prompts...
+Existing: 3535
+EvoLinkAI new: 530
+freestylefly new: 485
+gpt-image2 new: 2717
+YouMind new: 0
+cuigh new: 61
+Merged total: 3535
+Saved to src/data/prompts.json
+
+[6/6] Tagging + image fix...
+补全空 img: 0 条
+仍无法补全: 98 条
+  样例: ['高级男性魅力人像', '沙滩场景丰腴人物写真', 'Photorealistic Editorial Seated Portrait', 'Soft Aesthetic Fashion Magazine Cover', 'Editorial Fashion Poster']
+
+✓ 写回 /home/runner/work/rubin-roven/rubin-roven/src/data/prompts.json
+=== EvoLinkAI 当前 category 分布 ===
+  poster          206
+  portrait        145
+  ui              88
+  comparison      62
+  character       13
+  ad              11
+  ecommerce       4
+
+✓ 写回 /home/runner/work/rubin-roven/rubin-roven/src/data/prompts.json
+Loaded 3535 prompts
+reclassified: 1520
+
+=== 7-cat 分布 ===
+  portrait          633
+  ad                727
+  anime            1267
+  infographic       301
+  goods             381
+  other             226
+
+=== source 分布 ===
+  gpt-image2           2601
+  EvoLinkAI            529
+  freestylefly         349
+  cuigh                56
+
+✓ 写回 /home/runner/work/rubin-roven/rubin-roven/src/data/prompts.json
+  插画人像                   1
+
+sub_tag 覆盖率: 23% (无 sub_tag: 2716)
+
+✓ 写回 /home/runner/work/rubin-roven/rubin-roven/src/data/prompts.json
+
+[7/7] Done!
+
+Changes summary:
+  Total prompts: 3535
+    anime           1267
+    ad              727
+    portrait        633
+    goods           381
+    infographic     301
+    other           226
+  Sources:
+    gpt-image2           2601
+    EvoLinkAI            529
+    freestylefly         349
+    cuigh                56
+
+To deploy: npm run build && npm run preview
