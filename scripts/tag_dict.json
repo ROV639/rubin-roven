@@ -1,102 +1,148 @@
 {
   "_meta": {
-    "source": "opennana.com prompt gallery (captured 2026-06-03, one-time)",
-    "license": "no upstream LICENSE; reused for keyword matching only, not data replication",
-    "max_tags_per_prompt": 5
+    "description": "12 个本地分类 + 每个分类下专属的二级 tag 字典。tag 只在选中对应分类时显示，避免和分类重复。",
+    "source": "opennana.com 风格参考 + freestylefly 13 分类 + EvoLinkAI 7 分类 + YouMind 11 分类 + 关键词扩展",
+    "max_sub_tags_per_match": 5
   },
-  "电影感": [
-    "cinematic", "cinematic lighting", "cinematic portrait",
-    "film grain", "film still", "film noir", "anamorphic",
-    "movie scene", "moody lighting", "dramatic lighting",
-    "atmosphere", "atmospheric", "色彩", "氛围", "电影"
+
+  "_cat_order": [
+    "portrait", "character", "ecommerce", "food", "fashion", "vehicle",
+    "architecture", "landscape", "poster", "ui", "comparison", "infographic", "ad"
   ],
-  "超写实": [
-    "hyperrealistic", "hyper-realistic", "ultra realistic", "ultra-realistic",
-    "photorealistic", "photo realistic", "8k", "8k uhd",
-    "raw photo", "dslr", "highly detailed", "sharp focus",
-    "超写实", "写实摄影"
-  ],
-  "photography": [
-    "photography", "photograph", "portrait photography",
-    "studio photography", "lifestyle photography",
-    "editorial photography", "85mm", "50mm", "35mm",
-    "professional photography"
-  ],
-  "写实": [
-    "realistic", "lifelike", "true to life", "natural look",
-    "写实", "真实感", "真实"
-  ],
-  "portrait": [
-    "portrait", "headshot", "close-up face", "close up of face",
-    "upper body", "facial expression", "portrait of",
-    "人像", "肖像", "半身", "特写"
-  ],
-  "人像": [
-    "person", "woman", "man", "girl", "boy", "people",
-    "model", "lady", "gentleman", "人物", "女性", "男性",
-    "女孩", "男孩", "男人", "女人"
-  ],
-  "landscape": [
-    "landscape", "scenery", "cityscape", "skyline",
-    "mountain", "forest", "ocean", "sunset", "sunrise",
-    "wide shot", "vista", "风景", "山河", "自然", "城市景观"
-  ],
-  "时尚": [
-    "fashion", "couture", "haute couture", "editorial fashion",
-    "vogue", "runway", "lookbook", "outfit", "street style",
-    "时尚", "穿搭", "街拍"
-  ],
-  "自拍": [
-    "selfie", "self portrait", "phone camera", "casual selfie",
-    "i took this photo", "自拍", "随手拍"
-  ],
-  "vehicle": [
-    "car", "vehicle", "sports car", "supercar", "luxury car",
-    "ferrari", "porsche", "lamborghini", "tesla", "bmw", "mercedes",
-    "racing", "race car", "motorcycle", "汽车", "跑车", "赛车", "摩托车"
-  ],
-  "高级感": [
-    "luxury", "premium", "elegant", "high-end", "refined",
-    "sophisticated", "exclusive", "奢华", "高级", "优雅"
-  ],
-  "3D": [
-    "3d render", "3d rendering", "3d model", "3d illustration",
-    "blender", "octane render", "unreal engine", "cinema 4d",
-    "isometric 3d", "三维", "建模", "3d渲染", "立体"
-  ],
-  "动漫": [
-    "anime", "manga", "anime style", "anime-inspired",
-    "cel shading", "kawaii", "二次元", "动漫", "插画风"
-  ],
-  "信息图": [
-    "infographic", "chart", "diagram", "data visualization",
-    "comparison chart", "flowchart", "信息图", "图表", "对比图"
-  ],
-  "电商": [
-    "product shot", "product photography", "ecommerce",
-    "white background", "studio product", "amazon listing",
-    "商品图", "电商", "白底图", "产品摄影"
-  ],
-  "界面": [
-    "ui", "ux", "app interface", "dashboard", "web design",
-    "wireframe", "mobile app", "界面", "后台", "app截图"
-  ],
-  "海报": [
-    "poster", "poster design", "typography poster",
-    "advertising poster", "banner", "flyer",
-    "广告海报", "海报", "banner"
-  ],
-  "角色": [
-    "character design", "character illustration",
-    "mascot", "creature design", "concept art",
-    "角色设计", "吉祥物", "概念设计"
-  ],
-  "美妆": [
-    "makeup", "cosmetics", "beauty", "skincare",
-    "美妆", "化妆", "护肤品", "彩妆"
-  ],
-  "美食": [
-    "food", "food photography", "cuisine", "dish",
-    "restaurant", "美食", "菜品", "菜谱"
-  ]
+
+  "portrait": {
+    "label": "人像摄影",
+    "sub_tags": {
+      "真实人像": ["portrait", "headshot", "real person", "lifestyle portrait", "natural face", "no makeup"],
+      "抽象人像": ["abstract portrait", "distorted", "surreal portrait", "dripping", "fluid portrait", "sculpture face"],
+      "插画人像": ["illustrated portrait", "painted portrait", "watercolor portrait", "pencil drawing", "oil painting face", "手绘肖像"],
+      "黑白": ["black and white", "monochrome", "B&W", "grayscale portrait", "黑白"],
+      "棚拍": ["studio", "studio lighting", "seamless backdrop", "controlled lighting", "棚拍"],
+      "户外": ["outdoor portrait", "natural light", "golden hour", "outdoor", "户外"]
+    }
+  },
+
+  "character": {
+    "label": "人物角色",
+    "sub_tags": {
+      "日漫": ["anime", "manga", "cel shading", "kawaii", "二次元", "日漫", "动漫", "アニメ"],
+      "美漫": ["american comic", "marvel", "DC", "comic book style", "pop art", "美漫"],
+      "3D 角色": ["3d character", "pixar", "render character", "3D 建模角色", "unreal character"],
+      "吉祥物": ["mascot", "cute mascot", "brand mascot", "吉祥物"],
+      "历史人物": ["historical figure", "vintage portrait", "renaissance", "Victorian", "历史人物"],
+      "儿童": ["child", "kid", "boy portrait", "girl portrait", "婴儿", "儿童"]
+    }
+  },
+
+  "ecommerce": {
+    "label": "电商产品",
+    "sub_tags": {
+      "白底图": ["white background", "pure white", "isolated product", "white backdrop", "白底图"],
+      "场景图": ["lifestyle product", "in context", "scene product", "使用场景"],
+      "悬浮": ["floating product", "levitating", "悬浮", "zero gravity"],
+      "包装": ["packaging", "package design", "unboxing", "包装设计"]
+    }
+  },
+
+  "food": {
+    "label": "美食饮品",
+    "sub_tags": {
+      "中式": ["chinese food", "dim sum", "stir fry", "中式", "饺子", "面条", "火锅"],
+      "西式": ["western cuisine", "steak", "pasta", "burger", "fine dining", "西餐"],
+      "甜点": ["dessert", "cake", "ice cream", "chocolate", "pastry", "甜点", "蛋糕"],
+      "饮品": ["beverage", "coffee", "tea", "cocktail", "wine", "饮品", "咖啡", "酒"],
+      "俯拍": ["overhead food", "flat lay food", "top-down food", "俯拍"]
+    }
+  },
+
+  "fashion": {
+    "label": "时尚穿搭",
+    "sub_tags": {
+      "高级定制": ["couture", "haute couture", "luxury fashion", "designer wear", "高定"],
+      "街头": ["streetwear", "street style", "urban fashion", "街头"],
+      "编辑大片": ["editorial fashion", "vogue", "magazine shoot", "lookbook", "编辑大片"],
+      "复古": ["vintage fashion", "retro fashion", "y2k", "复古"]
+    }
+  },
+
+  "vehicle": {
+    "label": "汽车交通",
+    "sub_tags": {
+      "跑车": ["supercar", "sports car", "ferrari", "lamborghini", "porsche", "跑车"],
+      "赛车": ["racing", "race car", "motorsport", "track car", "赛车"],
+      "SUV": ["suv", "off-road", "4x4", "suv"],
+      "摩托车": ["motorcycle", "bike", "harley", "摩托车"],
+      "广告级": ["automotive advertising", "car commercial", "dramatic car", "汽车广告"]
+    }
+  },
+
+  "architecture": {
+    "label": "建筑空间",
+    "sub_tags": {
+      "室内": ["interior", "indoor", "living room", "kitchen", "bedroom", "室内"],
+      "外观": ["exterior", "facade", "building exterior", "外观"],
+      "城市": ["urban", "cityscape", "street", "downtown", "城市"],
+      "古典": ["classical", "gothic", "baroque", "victorian", "古典建筑"],
+      "现代": ["modern architecture", "minimalist", "concrete", "modern building", "现代建筑"]
+    }
+  },
+
+  "landscape": {
+    "label": "自然风景",
+    "sub_tags": {
+      "山": ["mountain", "alpine", "peak", "山", "雪山"],
+      "海": ["ocean", "sea", "beach", "wave", "海", "海浪"],
+      "森林": ["forest", "jungle", "woods", "trees", "森林"],
+      "天空": ["sky", "sunset", "sunrise", "clouds", "天空", "日落"],
+      "极光": ["aurora", "northern lights", "aurora borealis", "极光"]
+    }
+  },
+
+  "poster": {
+    "label": "海报插画",
+    "sub_tags": {
+      "电影海报": ["movie poster", "film poster", "cinema poster", "电影海报"],
+      "音乐封面": ["album cover", "music cover", "EP cover", "专辑封面"],
+      "活动": ["event poster", "concert poster", "festival poster", "活动海报"],
+      "排版": ["typography poster", "type poster", "lettering", "字体海报"]
+    }
+  },
+
+  "ui": {
+    "label": "界面设计",
+    "sub_tags": {
+      "App": ["mobile app", "iOS app", "android app", "app screenshot", "app 设计"],
+      "网页": ["web design", "landing page", "website", "网页设计"],
+      "后台": ["dashboard", "admin panel", "analytics", "后台", "数据看板"],
+      "图标": ["icon", "icon set", "iconography", "图标"]
+    }
+  },
+
+  "comparison": {
+    "label": "对比实验",
+    "sub_tags": {
+      "前后对比": ["before and after", "before/after", "对比", "before & after"],
+      "多版本": ["variation", "A/B", "multiple versions", "多版本"],
+      "风格对比": ["style transfer", "style comparison", "风格对比"]
+    }
+  },
+
+  "infographic": {
+    "label": "信息图解",
+    "sub_tags": {
+      "图表": ["chart", "graph", "data viz", "chart design", "图表"],
+      "流程图": ["flowchart", "diagram", "process diagram", "流程图"],
+      "图解": ["infographic", "explain", "educational", "信息图"]
+    }
+  },
+
+  "ad": {
+    "label": "广告创意",
+    "sub_tags": {
+      "品牌": ["brand", "branding", "logo", "brand identity", "品牌"],
+      "营销": ["marketing", "social media post", "promotion", "营销"],
+      "历史风格": ["vintage", "classical theme", "history", "复古风格"],
+      "场景叙事": ["storytelling", "scene", "narrative", "场景叙事"]
+    }
+  }
 }

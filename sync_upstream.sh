@@ -52,13 +52,27 @@ base_img_url = 'https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-
 
 cat_map = {
     'Portrait & Photography Cases': 'portrait',
+    'Portrait Cases': 'portrait',
+    'portrait': 'portrait',
     'E-commerce Cases': 'ecommerce',
     'Character & Illustration Cases': 'character',
+    'Character Design Cases': 'character',
     'UI & Product Design Cases': 'ui',
-    'Landscape & Architecture Cases': 'landscape',
-    'Poster & Banner Cases': 'poster',
+    'UI & Social Media Mockup Cases': 'ui',
+    'UI Cases': 'ui',
+    'ui': 'ui',
+    'Landscape & Architecture Cases': 'architecture',
+    'Architecture & Spaces': 'architecture',
+    'Poster & Illustration Cases': 'poster',
+    'Poster Cases': 'poster',
+    'poster': 'poster',
     'Ad & Marketing Cases': 'ad',
+    'Ad Creative Cases': 'ad',
+    'ad-creative': 'ad',
+    'Comparison & Community Examples': 'comparison',
     'Comparison Cases': 'comparison',
+    'comparison': 'comparison',
+    'Charts & Infographics': 'infographic',
 }
 
 results = []
@@ -112,14 +126,14 @@ cat_map = {
     'Products & E-commerce': 'ecommerce',
     'Characters & People': 'character',
     'UI & Interfaces': 'ui',
-    'Architecture & Spaces': 'landscape',
+    'Architecture & Spaces': 'architecture',
     'Posters & Typography': 'poster',
-    'Charts & Infographics': 'ad',
+    'Charts & Infographics': 'infographic',
     'Brand & Logos': 'ad',
     'Illustration & Art': 'character',
     'Scenes & Storytelling': 'ad',
-    'History & Classical Themes': 'poster',
-    'Documents & Publishing': 'ad',
+    'History & Classical Themes': 'ad',
+    'Documents & Publishing': 'infographic',
     'Other Use Cases': 'ad',
 }
 
@@ -450,6 +464,7 @@ echo "[6/6] Tagging + image fix..."
 cd "$SCRIPT_DIR"
 python3 scripts/fix_evo_images.py 2>&1 | tail -5
 python3 scripts/remap_evo_category.py 2>&1 | tail -10
+python3 scripts/cat_classify.py 2>&1 | tail -20
 python3 scripts/tag_prompts.py 2>&1 | tail -5
 
 echo ""
