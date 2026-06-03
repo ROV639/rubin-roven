@@ -8,6 +8,9 @@ on:
   schedule:
     - cron: '0 1 * * *'   # 每天 01:00 UTC (= 09:00 北京时间)
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -21,9 +24,19 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
       - name: Run sync
         run: |
-          bash sync_upstream.sh 2>&1 | tail -60
+          set +e
+          bash sync_upstream.sh > sync.log 2>&1
+          code=$?
+          tail -80 sync.log
+          exit $code
 
       - name: Copy to public/
         run: |
@@ -31,7 +44,7 @@ jobs:
 
       - name: Verify build
         run: |
-          npm install --no-audit --no-fund
+          npm ci --no-audit --no-fund
           npm run build
 
       - name: Commit & push

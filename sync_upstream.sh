@@ -9,17 +9,27 @@
 #   4. freestylefly/awesome-gpt-image-2                        (ChatGPT, 0.3k, cases.json)
 #   5. cuigh/awesome-nano-banana-prompts                       (Gemini, 0.06k, Apache-2.0)
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 WORK_DIR="/tmp/rubin-sync"
 PROMPTS_FILE="$SCRIPT_DIR/src/data/prompts.json"
+export EVO_REPO_DIR="$WORK_DIR/awesome-gpt-image-2-prompts"
+
+cleanup() {
+    [ -d "$WORK_DIR" ] && rm -r "$WORK_DIR"
+    for f in /tmp/evo_prompts.json /tmp/fly_prompts.json /tmp/gpt_prompts.json \
+             /tmp/yomind_prompts.json /tmp/cuigh_prompts.json; do
+        [ -e "$f" ] && rm "$f"
+    done
+}
+trap cleanup EXIT
 
 echo "=== Rubin Roven Prompt Sync ==="
 echo "Started: $(date)"
 
 # Clean and create work dir
-rm -rf "$WORK_DIR"
+[ -d "$WORK_DIR" ] && rm -r "$WORK_DIR"
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
 
@@ -454,10 +464,6 @@ with open('src/data/prompts.json', 'w') as f:
 
 print("Saved to src/data/prompts.json", file=__import__('sys').stderr)
 PYEOF
-
-# Cleanup
-rm -rf /tmp/evo_prompts.json /tmp/fly_prompts.json /tmp/gpt_prompts.json \
-       /tmp/yomind_prompts.json /tmp/cuigh_prompts.json /tmp/rubin-sync
 
 echo ""
 echo "[6/6] Tagging + image fix..."

@@ -13,6 +13,7 @@ fix_evo_images.py — 修复 EvoLinkAI 数据的图片 URL 问题
   2. 跑一次最终核验：HEAD 请求所有 URL，剔除仍 404 的
 """
 import json
+import os
 import re
 import sys
 import subprocess
@@ -21,6 +22,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "src" / "data" / "prompts.json"
+EVO_REPO_DIR = Path(os.environ.get("EVO_REPO_DIR", "/tmp/rubin-sync/awesome-gpt-image-2-prompts"))
 
 BASE_URL = "https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-prompts/main"
 
@@ -39,7 +41,7 @@ def probe_url(url: str, timeout: int = 8) -> int:
 
 def load_existing_dirs() -> set:
     """从 clone 下来的仓库读取所有 case 目录名。"""
-    repo = Path("/tmp/evo-probe/images")
+    repo = EVO_REPO_DIR / "images"
     if not repo.exists():
         return set()
     return {d.name for d in repo.iterdir() if d.is_dir()}
@@ -100,9 +102,9 @@ def main():
     failed = []
 
     known_dirs = load_existing_dirs()
-    print(f"已知 case 目录: {len(known_dirs)} 个 (从 /tmp/evo-probe/images/)")
+    print(f"已知 case 目录: {len(known_dirs)} 个 (从 {EVO_REPO_DIR / 'images'})")
     if not known_dirs:
-        print("⚠️  /tmp/evo-probe/images 不存在, 模糊匹配将退化")
+        print(f"⚠️  {EVO_REPO_DIR / 'images'} 不存在, 模糊匹配将退化")
 
     for p in evo:
         old = p.get("img", "")

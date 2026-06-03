@@ -9,6 +9,7 @@ sync_upstream.sh 已经在 [4/6] 块做了 cat_map，但写回 prompts.json 的 
 修法：直接读 upstream，按 link (tweet_url) 反查 → 重写 category。
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -16,7 +17,8 @@ from collections import Counter
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "src" / "data" / "prompts.json"
-UPSTREAM = Path("/tmp/evo-probe/data/ingested_tweets.json")
+EVO_REPO_DIR = Path(os.environ.get("EVO_REPO_DIR", "/tmp/rubin-sync/awesome-gpt-image-2-prompts"))
+UPSTREAM = EVO_REPO_DIR / "data" / "ingested_tweets.json"
 
 # upstream category → 本地 8 分类
 CAT_MAP = {
@@ -44,6 +46,10 @@ def main():
 
     with open(DATA_FILE, encoding="utf-8") as f:
         prompts = json.load(f)
+
+    if not UPSTREAM.exists():
+        print(f"⚠️ upstream not found, skip remap: {UPSTREAM}")
+        return
 
     with open(UPSTREAM, encoding="utf-8") as f:
         upstream = json.load(f)
